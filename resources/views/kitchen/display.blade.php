@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pantalla de Cocina - TecoCina</title>
 
     <!-- Bootstrap CSS -->
@@ -281,23 +282,36 @@
                     
                     <div class="order-items">
                         ${order.items.map(item => `
-                                <div class="order-item">
-                                    <div>
-                                        <div class="item-name">${item.quantity}x ${item.product.name}</div>
-                                        ${item.selected_variants ? `<div class="item-details">${item.selected_variants.map(v => v.value).join(', ')}</div>` : ''}
-                                        ${item.selected_options ? `<div class="item-details text-info">${item.selected_options.map(o => o.value).join(', ')}</div>` : ''}
-                                        ${item.special_instructions ? `<div class="item-details text-warning"><i class="fas fa-exclamation-triangle"></i> ${item.special_instructions}</div>` : ''}
-                                    </div>
-                                    <div class="item-quantity">${item.quantity}</div>
-                                </div>
-                            `).join('')}
+                                        <div class="order-item">
+                                            <div>
+                                                <div class="item-name">${item.quantity}x ${item.product.name}</div>
+                                                ${item.selected_variants ? `<div class="item-details">${item.selected_variants.map(v => v.value).join(', ')}</div>` : ''}
+                                                ${item.selected_options ? `<div class="item-details text-info">${item.selected_options.map(o => o.value).join(', ')}</div>` : ''}
+                                                ${item.special_instructions ? `<div class="item-details text-warning"><i class="fas fa-exclamation-triangle"></i> ${item.special_instructions}</div>` : ''}
+                                            </div>
+                                            <div class="item-quantity">${item.quantity}</div>
+                                        </div>
+                                    `).join('')}
                     </div>
                     
                     ${order.notes ? `
-                            <div class="order-notes">
-                                <strong>Notas:</strong> ${order.notes}
-                            </div>
-                        ` : ''}
+                                    <div class="order-notes">
+                                        <strong>Notas:</strong> ${order.notes}
+                                    </div>
+                                ` : ''}
+
+                    <div class="mt-3">
+                        ${order.status === 'confirmed' ? `
+                                    <button class="btn btn-success w-100" onclick="startPreparation(${order.id})">
+                                        <i class="fas fa-play me-1"></i> Iniciar preparación
+                                    </button>
+                                ` : ''}
+                        ${order.status === 'preparing' ? `
+                                    <button class="btn btn-primary w-100" onclick="markReady(${order.id})">
+                                        <i class="fas fa-check me-1"></i> Marcar listo
+                                    </button>
+                                ` : ''}
+                    </div>
                 </div>
             `).join('');
         }
@@ -313,6 +327,41 @@
         // Load orders initially and then every 10 seconds
         loadOrders();
         setInterval(loadOrders, 10000);
+
+        // Actions
+        function startPreparation(orderId) {
+            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
+            fetch(`/kitchen/orders/${orderId}/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    credentials: 'same-origin'
+                }).then(res => res.ok ? res.json() : Promise.reject(res))
+                .then(() => loadOrders())
+                .catch(() => alert('No se pudo iniciar preparación (CSRF o permisos).'));
+        }
+
+        function markReady(orderId) {
+            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
+            fetch(`/kitchen/orders/${orderId}/ready`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    credentials: 'same-origin'
+                }).then(res => res.ok ? res.json() : Promise.reject(res))
+                .then(() => loadOrders())
+                .catch(() => alert('No se pudo marcar como listo (CSRF o permisos).'));
+        }
 
         // Fullscreen functionality
         document.addEventListener('keydown', function(e) {

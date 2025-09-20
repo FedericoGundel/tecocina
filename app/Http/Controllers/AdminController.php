@@ -118,7 +118,22 @@ class AdminController extends Controller
 
         $order->update($update);
 
-        return response()->json(['success' => true, 'message' => 'Estado actualizado']);
+        // Refrescar y calcular el timestamp de referencia para el contador según el nuevo estado
+        $order->refresh();
+        $fromTs = match ($newStatus) {
+            'confirmed' => $order->confirmed_at ?: $order->created_at,
+            'preparing' => $order->preparing_at ?: $order->confirmed_at ?: $order->created_at,
+            'ready' => $order->ready_at ?: $order->preparing_at ?: $order->created_at,
+            'out_for_delivery' => $order->out_for_delivery_at ?: $order->ready_at ?: $order->created_at,
+            default => $order->created_at,
+        };
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado actualizado',
+            'from_ts' => optional($fromTs)->toIso8601String(),
+            'status' => $newStatus,
+        ]);
     }
 
     /**

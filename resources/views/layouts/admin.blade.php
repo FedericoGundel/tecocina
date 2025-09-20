@@ -17,7 +17,8 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* Azul océano */
+            background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
         }
 
         .sidebar .nav-link {
@@ -43,7 +44,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
             color: white;
         }
     </style>

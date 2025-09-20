@@ -425,9 +425,10 @@
                             const row = this.closest('tr');
                             const timerEl = row ? row.querySelector('[data-timer]') : null;
                             if (timerEl) {
-                                // usar "ahora" como nuevo inicio; el backend ya guardó el timestamp
-                                const nowIso = new Date().toISOString();
-                                timerEl.setAttribute('data-from', nowIso);
+                                // usar el timestamp del estado devuelto por el backend para NO reiniciar indebidamente
+                                const fromIso = (data && data.from_ts) ? data.from_ts : new Date()
+                                    .toISOString();
+                                timerEl.setAttribute('data-from', fromIso);
                                 timerEl.textContent = '00:00';
                                 attachTimer(timerEl);
                             }
