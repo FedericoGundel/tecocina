@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración del Negocio - Burger Admin Panel</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        .setting-panel {
+            transition: all 0.2s ease;
+        }
+        
+        .setting-panel:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .time-input {
+            width: 120px;
+        }
+        
+        .coupon-card {
+            transition: all 0.2s ease;
+        }
+        
+        .coupon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #F9C74F;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .collapsible-content.active {
+            max-height: 1000px;
+        }
+        
+        .toast {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .preview-box {
+            background: linear-gradient(135deg, #F9C74F 0%, #F9844A 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: #0D0D0D;
+            font-weight: 600;
+        }
+        
+        .day-toggle {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .day-toggle:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .day-toggle.active {
+            background-color: #F9C74F;
+            color: #0D0D0D;
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fburgeradm6574back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <h1 class="text-xl font-semibold text-gray-900">Configuración del Negocio</h1>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="orders_management.html" class="text-gray-600 hover:text-gray-900 transition-colors">Pedidos</a>
+                    <a href="products_management.html" class="text-gray-600 hover:text-gray-900 transition-colors">Productos</a>
+                    <a href="kitchen_display_mode.html" class="text-gray-600 hover:text-gray-900 transition-colors">Cocina</a>
+                    <a href="business_settings.html" class="text-primary font-medium border-b-2 border-primary pb-1">Configuración</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-2 space-y-1">
+                <a href="orders_management.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Pedidos</a>
+                <a href="products_management.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Productos</a>
+                <a href="kitchen_display_mode.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Cocina</a>
+                <a href="business_settings.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Configuración</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Configuración del Negocio</h2>
+                    <p class="mt-1 text-sm text-gray-600">Gestiona los parámetros operativos y reglas de negocio</p>
+                </div>
+                <div class="mt-4 sm:mt-0 flex space-x-3">
+                    <button id="reset-all-btn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                        Restablecer Todo
+                    </button>
+                    <button id="save-all-btn" class="btn-primary">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Business Hours Panel -->
+            <div class="setting-panel bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-900">Horarios de Atención</h3>
+                    </div>
+                    <button class="collapsible-toggle text-gray-400 hover:text-gray-600" data-target="business-hours">
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="business-hours" class="collapsible-content active">
+                    <div class="space-y-4">
+                        <!-- Days of Week -->
+                        <div id="business-hours-list" class="space-y-3">
+                            <!-- Days will be populated by JavaScript -->
+                        </div>
+                        
+                        <!-- Global Actions -->
+                        <div class="pt-4 border-t border-gray-200">
+                            <div class="flex flex-wrap gap-2">
+                                <button id="set-all-open" class="px-3 py-1 text-xs font-medium text-accent bg-accent-50 rounded-full hover:bg-accent-100">
+                                    Abrir Todos
+                                </button>
+                                <button id="set-all-closed" class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200">
+                                    Cerrar Todos
+                                </button>
+                                <button id="set-weekdays" class="px-3 py-1 text-xs font-medium text-primary bg-primary-50 rounded-full hover:bg-primary-100">
+                                    Solo Semana
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Costs Panel -->
+            <div class="setting-panel bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707L16 7.586V7a1 1 0 00-1-1h-1z"/>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-900">Costos de Envío</h3>
+                    </div>
+                    <button class="collapsible-toggle text-gray-400 hover:text-gray-600" data-target="delivery-costs">
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="delivery-costs" class="collapsible-content active">
+                    <div class="space-y-4">
+                        <!-- Base Delivery Cost -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Costo Base de Envío</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
+                                <input type="number" id="base-delivery-cost" class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="500" min="0" step="50" />
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Costo fijo para entregas locales</p>
+                        </div>
+                        
+                        <!-- Distance-based Pricing -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Costo por Kilómetro Adicional</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
+                                <input type="number" id="per-km-cost" class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="100" min="0" step="10" />
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Costo adicional por km después de los primeros 3km</p>
+                        </div>
+                        
+                        <!-- Maximum Distance -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Distancia Máxima de Entrega</label>
+                            <div class="relative">
+                                <input type="number" id="max-delivery-distance" class="pr-12 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="15" min="1" step="1" />
+                                <span class="absolute right-3 top-2.5 text-gray-500 text-sm">km</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Distancia máxima para realizar entregas</p>
+                        </div>
+                        
+                        <!-- Delivery Preview -->
+                        <div class="preview-box">
+                            <h4 class="font-semibold mb-2">Vista Previa de Costos</h4>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span>0-3 km:</span>
+                                    <span id="preview-base">$500</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>5 km:</span>
+                                    <span id="preview-5km">$700</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>10 km:</span>
+                                    <span id="preview-10km">$1,200</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Shipping Panel -->
+            <div class="setting-panel bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-900">Envío Gratuito</h3>
+                    </div>
+                    <button class="collapsible-toggle text-gray-400 hover:text-gray-600" data-target="free-shipping">
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="free-shipping" class="collapsible-content active">
+                    <div class="space-y-4">
+                        <!-- Enable Free Shipping -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Habilitar Envío Gratuito</label>
+                                <p class="text-xs text-gray-500">Ofrecer envío sin costo en pedidos grandes</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-free-shipping" />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Free Shipping Threshold -->
+                        <div id="free-shipping-settings" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monto Mínimo para Envío Gratuito</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
+                                    <input type="number" id="free-shipping-threshold" class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="5000" min="0" step="100" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">Pedidos superiores a este monto tendrán envío gratuito</p>
+                            </div>
+                            
+                            <!-- Free Shipping Zones -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Zonas de Envío Gratuito</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="free-shipping-local" class="rounded border-gray-300 text-primary focus:ring-primary-500" />
+                                        <span class="ml-2 text-sm text-gray-700">Solo zona local (0-3 km)</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="free-shipping-extended" class="rounded border-gray-300 text-primary focus:ring-primary-500" />
+                                        <span class="ml-2 text-sm text-gray-700">Zona extendida (0-10 km)</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="free-shipping-all" class="rounded border-gray-300 text-primary focus:ring-primary-500" />
+                                        <span class="ml-2 text-sm text-gray-700">Todas las zonas</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Percentage Panel -->
+            <div class="setting-panel bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-900">Porcentajes de Servicio</h3>
+                    </div>
+                    <button class="collapsible-toggle text-gray-400 hover:text-gray-600" data-target="service-percentage">
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="service-percentage" class="collapsible-content active">
+                    <div class="space-y-4">
+                        <!-- Delivery Service Fee -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Comisión por Entrega</label>
+                            <div class="relative">
+                                <input type="number" id="delivery-service-fee" class="pr-8 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="5" min="0" max="100" step="0.5" />
+                                <span class="absolute right-3 top-2.5 text-gray-500 text-sm">%</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Porcentaje adicional sobre el total del pedido para entregas</p>
+                        </div>
+                        
+                        <!-- Pickup Service Fee -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Comisión por Retiro</label>
+                            <div class="relative">
+                                <input type="number" id="pickup-service-fee" class="pr-8 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="2" min="0" max="100" step="0.5" />
+                                <span class="absolute right-3 top-2.5 text-gray-500 text-sm">%</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Porcentaje adicional sobre el total del pedido para retiros</p>
+                        </div>
+                        
+                        <!-- Card Payment Fee -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Recargo por Tarjeta</label>
+                            <div class="relative">
+                                <input type="number" id="card-payment-fee" class="pr-8 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="3" min="0" max="100" step="0.5" />
+                                <span class="absolute right-3 top-2.5 text-gray-500 text-sm">%</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Recargo adicional para pagos con tarjeta</p>
+                        </div>
+                        
+                        <!-- Service Fee Preview -->
+                        <div class="preview-box">
+                            <h4 class="font-semibold mb-2">Ejemplo de Cálculo</h4>
+                            <div class="space-y-1 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Pedido base:</span>
+                                    <span>$3,000</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Entrega + Tarjeta:</span>
+                                    <span id="preview-delivery-card">$3,240</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Retiro + Efectivo:</span>
+                                    <span id="preview-pickup-cash">$3,060</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coupon Management Panel -->
+        <div class="mt-6">
+            <div class="setting-panel bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-error" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/>
+                            <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-900">Gestión de Cupones</h3>
+                    </div>
+                    <button id="add-coupon-btn" class="btn-primary">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Nuevo Cupón
+                    </button>
+                </div>
+                
+                <!-- Coupons List -->
+                <div id="coupons-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Coupons will be populated by JavaScript -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="coupons-empty" class="text-center py-12 hidden">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No hay cupones</h3>
+                    <p class="mt-1 text-sm text-gray-500">Comienza creando tu primer cupón de descuento.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Coupon Modal -->
+    <div id="coupon-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="coupon-modal-title" class="text-xl font-semibold text-gray-900">Nuevo Cupón</h2>
+                    <button id="close-coupon-modal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="coupon-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Código del Cupón</label>
+                        <input type="text" id="coupon-code" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="DESCUENTO10" required />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                        <input type="text" id="coupon-description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="10% de descuento en tu pedido" required />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Descuento</label>
+                        <select id="coupon-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" required>
+                            <option value="percentage">Porcentaje</option>
+                            <option value="fixed">Monto Fijo</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Valor del Descuento</label>
+                        <div class="relative">
+                            <input type="number" id="coupon-value" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="10" min="0" step="0.01" required />
+                            <span id="coupon-unit" class="absolute right-3 top-2.5 text-gray-500 text-sm">%</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Monto Mínimo</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
+                            <input type="number" id="coupon-min-amount" class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="0" min="0" step="100" />
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Límite de Usos</label>
+                        <input type="number" id="coupon-usage-limit" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="100" min="1" />
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio</label>
+                            <input type="date" id="coupon-start-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de Fin</label>
+                            <input type="date" id="coupon-end-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="coupon-active" checked />
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="ml-2 text-sm text-gray-700">Cupón Activo</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancel-coupon" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                Guardar Cupón
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <svg class="w-6 h-6 text-warning mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Confirmar Acción</h3>
+                </div>
+                <p id="confirmation-message" class="text-gray-600 mb-6"></p>
+                <div class="flex justify-end space-x-3">
+                    <button id="cancel-confirmation" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button id="confirm-action" class="px-4 py-2 text-sm font-medium text-white bg-error rounded-lg hover:bg-error-600">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Settings Data Management
+        let businessSettings = {
+            businessHours: {
+                monday: { open: true, start: '09:00', end: '22:00' },
+                tuesday: { open: true, start: '09:00', end: '22:00' },
+                wednesday: { open: true, start: '09:00', end: '22:00' },
+                thursday: { open: true, start: '09:00', end: '22:00' },
+                friday: { open: true, start: '09:00', end: '23:00' },
+                saturday: { open: true, start: '10:00', end: '23:00' },
+                sunday: { open: false, start: '10:00', end: '22:00' }
+            },
+            delivery: {
+                baseCost: 500,
+                perKmCost: 100,
+                maxDistance: 15
+            },
+            freeShipping: {
+                enabled: true,
+                threshold: 5000,
+                zones: {
+                    local: true,
+                    extended: false,
+                    all: false
+                }
+            },
+            servicePercentages: {
+                deliveryFee: 5,
+                pickupFee: 2,
+                cardPaymentFee: 3
+            },
+            coupons: []
+        };
+        
+        let editingCouponId = null;
+        
+        // Initialize settings from localStorage
+        function initializeSettings() {
+            const savedSettings = localStorage.getItem('burger_business_settings');
+            if (savedSettings) {
+                businessSettings = { ...businessSettings, ...JSON.parse(savedSettings) };
+            }
+            
+            // Initialize mock coupons if none exist
+            if (businessSettings.coupons.length === 0) {
+                businessSettings.coupons = [
+                    {
+                        id: 'COUP-001',
+                        code: 'BIENVENIDO10',
+                        description: '10% de descuento para nuevos clientes',
+                        type: 'percentage',
+                        value: 10,
+                        minAmount: 1000,
+                        usageLimit: 100,
+                        usedCount: 23,
+                        startDate: '2025-01-01',
+                        endDate: '2025-12-31',
+                        active: true
+                    },
+                    {
+                        id: 'COUP-002',
+                        code: 'ENVIOGRATIS',
+                        description: 'Envío gratuito en pedidos superiores a $3000',
+                        type: 'fixed',
+                        value: 500,
+                        minAmount: 3000,
+                        usageLimit: 50,
+                        usedCount: 12,
+                        startDate: '2025-01-01',
+                        endDate: '2025-06-30',
+                        active: true
+                    }
+                ];
+            }
+            
+            loadSettingsToForm();
+        }
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('burger_business_settings', JSON.stringify(businessSettings));
+        }
+        
+        // Load settings to form
+        function loadSettingsToForm() {
+            // Business Hours
+            renderBusinessHours();
+            
+            // Delivery Costs
+            document.getElementById('base-delivery-cost').value = businessSettings.delivery.baseCost;
+            document.getElementById('per-km-cost').value = businessSettings.delivery.perKmCost;
+            document.getElementById('max-delivery-distance').value = businessSettings.delivery.maxDistance;
+            
+            // Free Shipping
+            document.getElementById('enable-free-shipping').checked = businessSettings.freeShipping.enabled;
+            document.getElementById('free-shipping-threshold').value = businessSettings.freeShipping.threshold;
+            document.getElementById('free-shipping-local').checked = businessSettings.freeShipping.zones.local;
+            document.getElementById('free-shipping-extended').checked = businessSettings.freeShipping.zones.extended;
+            document.getElementById('free-shipping-all').checked = businessSettings.freeShipping.zones.all;
+            
+            // Service Percentages
+            document.getElementById('delivery-service-fee').value = businessSettings.servicePercentages.deliveryFee;
+            document.getElementById('pickup-service-fee').value = businessSettings.servicePercentages.pickupFee;
+            document.getElementById('card-payment-fee').value = businessSettings.servicePercentages.cardPaymentFee;
+            
+            // Update UI states
+            toggleFreeShippingSettings();
+            updateDeliveryPreview();
+            updateServicePreview();
+            renderCoupons();
+        }
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS'
+            }).format(amount);
+        }
+        
+        // Render business hours
+        function renderBusinessHours() {
+            const days = [
+                { key: 'monday', label: 'Lunes' },
+                { key: 'tuesday', label: 'Martes' },
+                { key: 'wednesday', label: 'Miércoles' },
+                { key: 'thursday', label: 'Jueves' },
+                { key: 'friday', label: 'Viernes' },
+                { key: 'saturday', label: 'Sábado' },
+                { key: 'sunday', label: 'Domingo' }
+            ];
+            
+            const container = document.getElementById('business-hours-list');
+            container.innerHTML = days.map(day => {
+                const daySettings = businessSettings.businessHours[day.key];
+                return `
+                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <button class="day-toggle px-3 py-1 text-sm font-medium rounded-full transition-colors ${daySettings.open ? 'active' : 'bg-gray-100 text-gray-600'}" data-day="${day.key}">
+                                ${day.label}
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="time" class="time-input px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${!daySettings.open ? 'opacity-50' : ''}" 
+                                   data-day="${day.key}" data-type="start" value="${daySettings.start}" ${!daySettings.open ? 'disabled' : ''}>
+                            <span class="text-gray-500">-</span>
+                            <input type="time" class="time-input px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${!daySettings.open ? 'opacity-50' : ''}" 
+                                   data-day="${day.key}" data-type="end" value="${daySettings.end}" ${!daySettings.open ? 'disabled' : ''}> 
+                            <label class="toggle-switch ml-2">
+                                <input type="checkbox" class="day-open-toggle" data-day="${day.key}" ${daySettings.open ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Toggle free shipping settings visibility
+        function toggleFreeShippingSettings() {
+            const enabled = document.getElementById('enable-free-shipping').checked;
+            const settings = document.getElementById('free-shipping-settings');
+            
+            if (enabled) {
+                settings.style.display = 'block';
+                settings.style.opacity = '1';
+            } else {
+                settings.style.display = 'none';
+                settings.style.opacity = '0.5';
+            }
+        }
+        
+        // Update delivery cost preview
+        function updateDeliveryPreview() {
+            const baseCost = parseFloat(document.getElementById('base-delivery-cost').value) || 500;
+            const perKmCost = parseFloat(document.getElementById('per-km-cost').value) || 100;
+            
+            document.getElementById('preview-base').textContent = formatCurrency(baseCost);
+            document.getElementById('preview-5km').textContent = formatCurrency(baseCost + (2 * perKmCost));
+            document.getElementById('preview-10km').textContent = formatCurrency(baseCost + (7 * perKmCost));
+        }
+        
+        // Update service percentage preview
+        function updateServicePreview() {
+            const baseAmount = 3000;
+            const deliveryFee = parseFloat(document.getElementById('delivery-service-fee').value) || 0;
+            const pickupFee = parseFloat(document.getElementById('pickup-service-fee').value) || 0;
+            const cardFee = parseFloat(document.getElementById('card-payment-fee').value) || 0;
+            
+            const deliveryCardTotal = baseAmount * (1 + (deliveryFee + cardFee) / 100);
+            const pickupCashTotal = baseAmount * (1 + pickupFee / 100);
+            
+            document.getElementById('preview-delivery-card').textContent = formatCurrency(deliveryCardTotal);
+            document.getElementById('preview-pickup-cash').textContent = formatCurrency(pickupCashTotal);
+        }
+        
+        // Render coupons
+        function renderCoupons() {
+            const container = document.getElementById('coupons-list');
+            const emptyState = document.getElementById('coupons-empty');
+            
+            if (businessSettings.coupons.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            container.innerHTML = businessSettings.coupons.map(coupon => {
+                const isExpired = coupon.endDate && new Date(coupon.endDate) < new Date();
+                const usagePercent = coupon.usageLimit ? (coupon.usedCount / coupon.usageLimit) * 100 : 0;
+                
+                return `
+                    <div class="coupon-card bg-white border border-gray-200 rounded-lg p-4 ${!coupon.active || isExpired ? 'opacity-60' : ''}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">${coupon.code}</h4>
+                                <p class="text-sm text-gray-600 mt-1">${coupon.description}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="status-badge ${coupon.active && !isExpired ? 'status-success' : 'status-error'}">
+                                    ${coupon.active && !isExpired ? 'Activo' : isExpired ? 'Expirado' : 'Inactivo'}
+                                </span>
+                                <div class="relative">
+                                    <button class="coupon-actions-btn p-1 hover:bg-gray-100 rounded" data-coupon-id="${coupon.id}">
+                                        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Descuento:</span>
+                                <span class="font-medium">${coupon.type === 'percentage' ? coupon.value + '%' : formatCurrency(coupon.value)}</span>
+                            </div>
+                            ${coupon.minAmount > 0 ? `
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Mínimo:</span>
+                                    <span class="font-medium">${formatCurrency(coupon.minAmount)}</span>
+                                </div>
+                            ` : ''}
+                            ${coupon.usageLimit ? `
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Usos:</span>
+                                    <span class="font-medium">${coupon.usedCount}/${coupon.usageLimit}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: ${Math.min(usagePercent, 100)}%"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button class="edit-coupon-btn flex-1 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors" data-coupon-id="${coupon.id}">
+                                Editar
+                            </button>
+                            <button class="delete-coupon-btn px-3 py-2 text-sm bg-error text-white rounded hover:bg-error-600 transition-colors" data-coupon-id="${coupon.id}">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Show coupon modal
+        function showCouponModal(couponId = null) {
+            editingCouponId = couponId;
+            const modal = document.getElementById('coupon-modal');
+            const title = document.getElementById('coupon-modal-title');
+            const form = document.getElementById('coupon-form');
+            
+            if (couponId) {
+                const coupon = businessSettings.coupons.find(c => c.id === couponId);
+                if (coupon) {
+                    title.textContent = 'Editar Cupón';
+                    document.getElementById('coupon-code').value = coupon.code;
+                    document.getElementById('coupon-description').value = coupon.description;
+                    document.getElementById('coupon-type').value = coupon.type;
+                    document.getElementById('coupon-value').value = coupon.value;
+                    document.getElementById('coupon-min-amount').value = coupon.minAmount || '';
+                    document.getElementById('coupon-usage-limit').value = coupon.usageLimit || '';
+                    document.getElementById('coupon-start-date').value = coupon.startDate || '';
+                    document.getElementById('coupon-end-date').value = coupon.endDate || '';
+                    document.getElementById('coupon-active').checked = coupon.active;
+                    updateCouponUnit();
+                }
+            } else {
+                title.textContent = 'Nuevo Cupón';
+                form.reset();
+                document.getElementById('coupon-active').checked = true;
+                updateCouponUnit();
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // Update coupon unit display
+        function updateCouponUnit() {
+            const type = document.getElementById('coupon-type').value;
+            const unit = document.getElementById('coupon-unit');
+            unit.textContent = type === 'percentage' ? '%' : '$';
+        }
+        
+        // Save coupon
+        function saveCoupon(formData) {
+            const coupon = {
+                id: editingCouponId || `COUP-${String(businessSettings.coupons.length + 1).padStart(3, '0')}`,
+                code: formData.get('code').toUpperCase(),
+                description: formData.get('description'),
+                type: formData.get('type'),
+                value: parseFloat(formData.get('value')),
+                minAmount: parseFloat(formData.get('minAmount')) || 0,
+                usageLimit: parseInt(formData.get('usageLimit')) || null,
+                usedCount: editingCouponId ? businessSettings.coupons.find(c => c.id === editingCouponId).usedCount : 0,
+                startDate: formData.get('startDate') || null,
+                endDate: formData.get('endDate') || null,
+                active: formData.has('active')
+            };
+            
+            if (editingCouponId) {
+                const index = businessSettings.coupons.findIndex(c => c.id === editingCouponId);
+                businessSettings.coupons[index] = coupon;
+            } else {
+                businessSettings.coupons.push(coupon);
+            }
+            
+            saveSettings();
+            renderCoupons();
+            document.getElementById('coupon-modal').classList.add('hidden');
+            showToast(editingCouponId ? 'Cupón actualizado correctamente' : 'Cupón creado correctamente', 'success');
+        }
+        
+        // Delete coupon
+        function deleteCoupon(couponId) {
+            showConfirmation(
+                '¿Estás seguro de que deseas eliminar este cupón? Esta acción no se puede deshacer.',
+                () => {
+                    businessSettings.coupons = businessSettings.coupons.filter(c => c.id !== couponId);
+                    saveSettings();
+                    renderCoupons();
+                    showToast('Cupón eliminado correctamente', 'success');
+                }
+            );
+        }
+        
+        // Show confirmation modal
+        function showConfirmation(message, onConfirm) {
+            const modal = document.getElementById('confirmation-modal');
+            const messageEl = document.getElementById('confirmation-message');
+            const confirmBtn = document.getElementById('confirm-action');
+            
+            messageEl.textContent = message;
+            modal.classList.remove('hidden');
+            
+            confirmBtn.onclick = () => {
+                onConfirm();
+                modal.classList.add('hidden');
+            };
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'border-green-200 bg-green-50' : type === 'error' ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}`;
+            
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        ${type === 'success' ? 
+                            '<svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>' :
+                            type === 'error' ?
+                            '<svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>' :
+                            '<svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+                        }
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button class="inline-flex text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.remove()">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeSettings();
+            
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Collapsible sections
+            document.querySelectorAll('.collapsible-toggle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = document.getElementById(this.dataset.target);
+                    const icon = this.querySelector('svg');
+                    
+                    target.classList.toggle('active');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+            
+            // Business hours event delegation
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('day-open-toggle')) {
+                    const day = e.target.dataset.day;
+                    const isOpen = e.target.checked;
+                    
+                    businessSettings.businessHours[day].open = isOpen;
+                    
+                    // Update UI
+                    const dayRow = e.target.closest('.flex');
+                    const timeInputs = dayRow.querySelectorAll('input[type="time"]');
+                    const dayToggle = dayRow.querySelector('.day-toggle');
+                    
+                    timeInputs.forEach(input => {
+                        input.disabled = !isOpen;
+                        input.classList.toggle('opacity-50', !isOpen);
+                    });
+                    
+                    if (isOpen) {
+                        dayToggle.classList.add('active');
+                        dayToggle.classList.remove('bg-gray-100', 'text-gray-600');
+                    } else {
+                        dayToggle.classList.remove('active');
+                        dayToggle.classList.add('bg-gray-100', 'text-gray-600');
+                    }
+                    
+                    saveSettings();
+                }
+                
+                if (e.target.type === 'time' && e.target.dataset.day) {
+                    const day = e.target.dataset.day;
+                    const type = e.target.dataset.type;
+                    
+                    businessSettings.businessHours[day][type] = e.target.value;
+                    saveSettings();
+                }
+            });
+            
+            // Business hours quick actions
+            document.getElementById('set-all-open').addEventListener('click', function() {
+                Object.keys(businessSettings.businessHours).forEach(day => {
+                    businessSettings.businessHours[day].open = true;
+                });
+                renderBusinessHours();
+                saveSettings();
+                showToast('Todos los días configurados como abiertos', 'success');
+            });
+            
+            document.getElementById('set-all-closed').addEventListener('click', function() {
+                Object.keys(businessSettings.businessHours).forEach(day => {
+                    businessSettings.businessHours[day].open = false;
+                });
+                renderBusinessHours();
+                saveSettings();
+                showToast('Todos los días configurados como cerrados', 'success');
+            });
+            
+            document.getElementById('set-weekdays').addEventListener('click', function() {
+                const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+                const weekends = ['saturday', 'sunday'];
+                
+                weekdays.forEach(day => {
+                    businessSettings.businessHours[day].open = true;
+                });
+                weekends.forEach(day => {
+                    businessSettings.businessHours[day].open = false;
+                });
+                
+                renderBusinessHours();
+                saveSettings();
+                showToast('Configurado para días de semana únicamente', 'success');
+            });
+            
+            // Delivery cost inputs
+            ['base-delivery-cost', 'per-km-cost', 'max-delivery-distance'].forEach(id => {
+                document.getElementById(id).addEventListener('input', function() {
+                    const field = id.replace('-', '').replace('-', '');
+                    const camelCase = field.replace(/([A-Z])/g, (match, letter) => letter.toLowerCase());
+                    
+                    if (id === 'base-delivery-cost') {
+                        businessSettings.delivery.baseCost = parseFloat(this.value) || 0;
+                    } else if (id === 'per-km-cost') {
+                        businessSettings.delivery.perKmCost = parseFloat(this.value) || 0;
+                    } else if (id === 'max-delivery-distance') {
+                        businessSettings.delivery.maxDistance = parseFloat(this.value) || 0;
+                    }
+                    
+                    updateDeliveryPreview();
+                    saveSettings();
+                });
+            });
+            
+            // Free shipping toggle
+            document.getElementById('enable-free-shipping').addEventListener('change', function() {
+                businessSettings.freeShipping.enabled = this.checked;
+                toggleFreeShippingSettings();
+                saveSettings();
+            });
+            
+            // Free shipping threshold
+            document.getElementById('free-shipping-threshold').addEventListener('input', function() {
+                businessSettings.freeShipping.threshold = parseFloat(this.value) || 0;
+                saveSettings();
+            });
+            
+            // Free shipping zones
+            ['free-shipping-local', 'free-shipping-extended', 'free-shipping-all'].forEach(id => {
+                document.getElementById(id).addEventListener('change', function() {
+                    const zone = id.replace('free-shipping-', '');
+                    businessSettings.freeShipping.zones[zone] = this.checked;
+                    saveSettings();
+                });
+            });
+            
+            // Service percentage inputs
+            ['delivery-service-fee', 'pickup-service-fee', 'card-payment-fee'].forEach(id => {
+                document.getElementById(id).addEventListener('input', function() {
+                    const field = id.replace('delivery-', '').replace('pickup-', '').replace('card-payment-', '').replace('-', '');
+                    
+                    if (id === 'delivery-service-fee') {
+                        businessSettings.servicePercentages.deliveryFee = parseFloat(this.value) || 0;
+                    } else if (id === 'pickup-service-fee') {
+                        businessSettings.servicePercentages.pickupFee = parseFloat(this.value) || 0;
+                    } else if (id === 'card-payment-fee') {
+                        businessSettings.servicePercentages.cardPaymentFee = parseFloat(this.value) || 0;
+                    }
+                    
+                    updateServicePreview();
+                    saveSettings();
+                });
+            });
+            
+            // Coupon type change
+            document.getElementById('coupon-type').addEventListener('change', updateCouponUnit);
+            
+            // Coupon modal events
+            document.getElementById('add-coupon-btn').addEventListener('click', () => showCouponModal());
+            document.getElementById('close-coupon-modal').addEventListener('click', () => {
+                document.getElementById('coupon-modal').classList.add('hidden');
+            });
+            document.getElementById('cancel-coupon').addEventListener('click', () => {
+                document.getElementById('coupon-modal').classList.add('hidden');
+            });
+            
+            // Coupon form submission
+            document.getElementById('coupon-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                saveCoupon(formData);
+            });
+            
+            // Coupon actions event delegation
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.edit-coupon-btn')) {
+                    const couponId = e.target.closest('.edit-coupon-btn').dataset.couponId;
+                    showCouponModal(couponId);
+                }
+                
+                if (e.target.closest('.delete-coupon-btn')) {
+                    const couponId = e.target.closest('.delete-coupon-btn').dataset.couponId;
+                    deleteCoupon(couponId);
+                }
+            });
+            
+            // Confirmation modal events
+            document.getElementById('cancel-confirmation').addEventListener('click', () => {
+                document.getElementById('confirmation-modal').classList.add('hidden');
+            });
+            
+            // Global actions
+            document.getElementById('save-all-btn').addEventListener('click', function() {
+                saveSettings();
+                showToast('Configuración guardada correctamente', 'success');
+            });
+            
+            document.getElementById('reset-all-btn').addEventListener('click', function() {
+                showConfirmation(
+                    '¿Estás seguro de que deseas restablecer toda la configuración? Se perderán todos los cambios.',
+                    () => {
+                        localStorage.removeItem('burger_business_settings');
+                        businessSettings = {
+                            businessHours: {
+                                monday: { open: true, start: '09:00', end: '22:00' },
+                                tuesday: { open: true, start: '09:00', end: '22:00' },
+                                wednesday: { open: true, start: '09:00', end: '22:00' },
+                                thursday: { open: true, start: '09:00', end: '22:00' },
+                                friday: { open: true, start: '09:00', end: '23:00' },
+                                saturday: { open: true, start: '10:00', end: '23:00' },
+                                sunday: { open: false, start: '10:00', end: '22:00' }
+                            },
+                            delivery: {
+                                baseCost: 500,
+                                perKmCost: 100,
+                                maxDistance: 15
+                            },
+                            freeShipping: {
+                                enabled: true,
+                                threshold: 5000,
+                                zones: {
+                                    local: true,
+                                    extended: false,
+                                    all: false
+                                }
+                            },
+                            servicePercentages: {
+                                deliveryFee: 5,
+                                pickupFee: 2,
+                                cardPaymentFee: 3
+                            },
+                            coupons: []
+                        };
+                        loadSettingsToForm();
+                        showToast('Configuración restablecida correctamente', 'success');
+                    }
+                );
+            });
+            
+            // Close modals on backdrop click
+            document.getElementById('coupon-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('confirmation-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Productos - Burger Admin Panel</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .product-card {
+            transition: all 0.2s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .availability-toggle {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .availability-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #22C55E;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .variant-chip {
+            display: inline-block;
+            background-color: #F3F4F6;
+            color: #374151;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+        }
+        
+        .toast {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .mobile-product-card {
+            border-left: 4px solid transparent;
+        }
+        
+        .mobile-product-card.available {
+            border-left-color: #22C55E;
+        }
+        
+        .mobile-product-card.unavailable {
+            border-left-color: #EF4444;
+        }
+        
+        .pagination-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .sortable-header:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .sort-icon {
+            transition: transform 0.2s ease;
+        }
+        
+        .sort-desc .sort-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fburgeradm6574back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <h1 class="text-xl font-semibold text-gray-900">Gestión de Productos</h1>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="orders_management.html" class="text-gray-600 hover:text-gray-900 transition-colors">Pedidos</a>
+                    <a href="products_management.html" class="text-primary font-medium border-b-2 border-primary pb-1">Productos</a>
+                    <a href="kitchen_display_mode.html" class="text-gray-600 hover:text-gray-900 transition-colors">Cocina</a>
+                    <a href="business_settings.html" class="text-gray-600 hover:text-gray-900 transition-colors">Configuración</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-2 space-y-1">
+                <a href="orders_management.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Pedidos</a>
+                <a href="products_management.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Productos</a>
+                <a href="kitchen_display_mode.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Cocina</a>
+                <a href="business_settings.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Configuración</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Toolbar -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <!-- Left Side - Search and Filters -->
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Buscar productos..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-full sm:w-64" />
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Categoría:</label>
+                        <select id="category-filter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value>Todas</option>
+                            <option value="hamburguesas">Hamburguesas</option>
+                            <option value="acompañamientos">Acompañamientos</option>
+                            <option value="bebidas">Bebidas</option>
+                            <option value="postres">Postres</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Availability Filter -->
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Estado:</label>
+                        <select id="availability-filter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value>Todos</option>
+                            <option value="available">Disponible</option>
+                            <option value="unavailable">No Disponible</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Actions -->
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <!-- Results Count -->
+                    <div class="text-sm text-gray-600">
+                        Mostrando <span id="results-count">0</span> productos
+                    </div>
+                    
+                    <!-- Add Product Button -->
+                    <button id="add-product-btn" class="btn-primary flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Agregar Producto</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div id="desktop-table" class="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="image">
+                                Imagen
+                            </th>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="name">
+                                <div class="flex items-center space-x-1">
+                                    <span>Nombre</span>
+                                    <svg class="w-4 h-4 sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="category">
+                                <div class="flex items-center space-x-1">
+                                    <span>Categoría</span>
+                                    <svg class="w-4 h-4 sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="price">
+                                <div class="flex items-center space-x-1">
+                                    <span>Precio</span>
+                                    <svg class="w-4 h-4 sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="sku">
+                                <div class="flex items-center space-x-1">
+                                    <span>SKU</span>
+                                    <svg class="w-4 h-4 sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-sort="stock">
+                                <div class="flex items-center space-x-1">
+                                    <span>Stock</span>
+                                    <svg class="w-4 h-4 sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Disponible
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- Products will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div id="mobile-cards" class="lg:hidden space-y-4">
+            <!-- Products will be inserted here -->
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination-container" class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Página <span id="current-page">1</span> de <span id="total-pages">1</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="prev-page" class="pagination-btn px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Anterior
+                </button>
+                <button id="next-page" class="pagination-btn px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Siguiente
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="modal-title" class="text-xl font-semibold text-gray-900">Agregar Producto</h2>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="product-form" class="space-y-6">
+                    <!-- Image Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Imagen del Producto</label>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="image-preview" src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Vista previa" class="image-preview" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" id="image-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100" />
+                                <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF hasta 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Name -->
+                    <div>
+                        <label for="product-name" class="block text-sm font-medium text-gray-700 mb-2">Nombre del Producto *</label>
+                        <input type="text" id="product-name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Ej: Hamburguesa Clásica" />
+                    </div>
+                    
+                    <!-- Description -->
+                    <div>
+                        <label for="product-description" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                        <textarea id="product-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Descripción del producto..."></textarea>
+                    </div>
+                    
+                    <!-- Category and Price Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="product-category" class="block text-sm font-medium text-gray-700 mb-2">Categoría *</label>
+                            <select id="product-category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value>Seleccionar categoría</option>
+                                <option value="hamburguesas">Hamburguesas</option>
+                                <option value="acompañamientos">Acompañamientos</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="postres">Postres</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="product-price" class="block text-sm font-medium text-gray-700 mb-2">Precio (ARS) *</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-500">$</span>
+                                <input type="number" id="product-price" required min="0" step="0.01" class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="0.00" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SKU and Stock Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="product-sku" class="block text-sm font-medium text-gray-700 mb-2">SKU</label>
+                            <input type="text" id="product-sku" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Ej: BURG-001" />
+                        </div>
+                        
+                        <div>
+                            <label for="product-stock" class="block text-sm font-medium text-gray-700 mb-2">Stock</label>
+                            <input type="number" id="product-stock" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="0" />
+                        </div>
+                    </div>
+                    
+                    <!-- Variants -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Variantes/Opciones</label>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <input type="text" id="variant-input" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Ej: Sin cebolla, Extra queso" />
+                                <button type="button" id="add-variant-btn" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                    Agregar
+                                </button>
+                            </div>
+                            <div id="variants-container" class="flex flex-wrap gap-2">
+                                <!-- Variants will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Availability Toggle -->
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">Producto Disponible</label>
+                        <label class="availability-toggle">
+                            <input type="checkbox" id="product-available" checked />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        <button type="button" id="cancel-btn" class="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="save-btn" class="flex-1 btn-primary">
+                            Guardar Producto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0">
+                        <svg class="w-8 h-8 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Confirmar Eliminación</h3>
+                        <p class="text-sm text-gray-500 mt-1">Esta acción no se puede deshacer.</p>
+                    </div>
+                </div>
+                
+                <p class="text-gray-700 mb-6">
+                    ¿Estás seguro de que deseas eliminar el producto <strong id="delete-product-name"></strong>?
+                </p>
+                
+                <div class="flex space-x-3">
+                    <button id="cancel-delete-btn" class="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        Cancelar
+                    </button>
+                    <button id="confirm-delete-btn" class="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:bg-error-600 transition-colors">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Mock Data and State Management
+        let products = [];
+        let filteredProducts = [];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let currentSort = { field: 'name', direction: 'asc' };
+        let editingProductId = null;
+        let productVariants = [];
+        
+        // Initialize mock data
+        function initializeMockData() {
+            const mockProducts = [
+                {
+                    id: 'PROD-001',
+                    name: 'Hamburguesa Clásica',
+                    description: 'Carne de res, lechuga, tomate, cebolla y salsa especial',
+                    category: 'hamburguesas',
+                    price: 2500,
+                    sku: 'BURG-001',
+                    stock: 50,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Sin cebolla', 'Extra queso'],
+                    createdAt: new Date('2025-01-10T10:00:00')
+                },
+                {
+                    id: 'PROD-002',
+                    name: 'Hamburguesa Doble',
+                    description: 'Doble carne de res, queso cheddar, bacon y salsa BBQ',
+                    category: 'hamburguesas',
+                    price: 3200,
+                    sku: 'BURG-002',
+                    stock: 30,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1553979459-d2229ba7433a?q=80&w=2068&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Sin bacon', 'Extra salsa'],
+                    createdAt: new Date('2025-01-10T11:00:00')
+                },
+                {
+                    id: 'PROD-003',
+                    name: 'Hamburguesa Veggie',
+                    description: 'Medallón de quinoa y vegetales, lechuga, tomate y palta',
+                    category: 'hamburguesas',
+                    price: 2800,
+                    sku: 'BURG-003',
+                    stock: 25,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1525059696034-4967a729002e?q=80&w=2064&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Sin palta', 'Extra vegetales'],
+                    createdAt: new Date('2025-01-10T12:00:00')
+                },
+                {
+                    id: 'PROD-004',
+                    name: 'Papas Fritas',
+                    description: 'Papas cortadas a mano, doradas y crocantes',
+                    category: 'acompañamientos',
+                    price: 800,
+                    sku: 'SIDE-001',
+                    stock: 100,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Pequeña', 'Grande'],
+                    createdAt: new Date('2025-01-10T13:00:00')
+                },
+                {
+                    id: 'PROD-005',
+                    name: 'Aros de Cebolla',
+                    description: 'Aros de cebolla rebozados y fritos hasta quedar dorados',
+                    category: 'acompañamientos',
+                    price: 900,
+                    sku: 'SIDE-002',
+                    stock: 40,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1639024471283-03518883512d?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Salsa ranch', 'Salsa picante'],
+                    createdAt: new Date('2025-01-10T14:00:00')
+                },
+                {
+                    id: 'PROD-006',
+                    name: 'Coca Cola',
+                    description: 'Bebida gaseosa clásica, 500ml',
+                    category: 'bebidas',
+                    price: 600,
+                    sku: 'DRINK-001',
+                    stock: 80,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Normal', 'Zero'],
+                    createdAt: new Date('2025-01-10T15:00:00')
+                },
+                {
+                    id: 'PROD-007',
+                    name: 'Agua Mineral',
+                    description: 'Agua mineral sin gas, 500ml',
+                    category: 'bebidas',
+                    price: 400,
+                    sku: 'DRINK-002',
+                    stock: 60,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Con gas', 'Sin gas'],
+                    createdAt: new Date('2025-01-10T16:00:00')
+                },
+                {
+                    id: 'PROD-008',
+                    name: 'Helado de Vainilla',
+                    description: 'Helado artesanal de vainilla con salsa de chocolate',
+                    category: 'postres',
+                    price: 1200,
+                    sku: 'DESS-001',
+                    stock: 20,
+                    available: false,
+                    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Con salsa', 'Sin salsa'],
+                    createdAt: new Date('2025-01-10T17:00:00')
+                },
+                {
+                    id: 'PROD-009',
+                    name: 'Brownie',
+                    description: 'Brownie de chocolate con nueces y helado de vainilla',
+                    category: 'postres',
+                    price: 1500,
+                    sku: 'DESS-002',
+                    stock: 15,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Con helado', 'Sin helado'],
+                    createdAt: new Date('2025-01-10T18:00:00')
+                },
+                {
+                    id: 'PROD-010',
+                    name: 'Ensalada César',
+                    description: 'Lechuga romana, crutones, queso parmesano y aderezo césar',
+                    category: 'acompañamientos',
+                    price: 1200,
+                    sku: 'SIDE-003',
+                    stock: 35,
+                    available: true,
+                    image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    variants: ['Con pollo', 'Sin pollo'],
+                    createdAt: new Date('2025-01-10T19:00:00')
+                }
+            ];
+            
+            // Load from localStorage or use mock data
+            const savedProducts = localStorage.getItem('burger_products');
+            products = savedProducts ? JSON.parse(savedProducts) : mockProducts;
+            
+            // Save to localStorage if using mock data
+            if (!savedProducts) {
+                localStorage.setItem('burger_products', JSON.stringify(products));
+            }
+        }
+        
+        // Save products to localStorage
+        function saveProducts() {
+            localStorage.setItem('burger_products', JSON.stringify(products));
+        }
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS'
+            }).format(amount);
+        }
+        
+        // Get category display name
+        function getCategoryDisplayName(category) {
+            const categoryMap = {
+                'hamburguesas': 'Hamburguesas',
+                'acompañamientos': 'Acompañamientos',
+                'bebidas': 'Bebidas',
+                'postres': 'Postres'
+            };
+            return categoryMap[category] || category;
+        }
+        
+        // Filter products
+        function filterProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+            const availabilityFilter = document.getElementById('availability-filter').value;
+            
+            filteredProducts = products.filter(product => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm) ||
+                    product.sku.toLowerCase().includes(searchTerm);
+                
+                // Category filter
+                const matchesCategory = !categoryFilter || product.category === categoryFilter;
+                
+                // Availability filter
+                const matchesAvailability = !availabilityFilter || 
+                    (availabilityFilter === 'available' && product.available) ||
+                    (availabilityFilter === 'unavailable' && !product.available);
+                
+                return matchesSearch && matchesCategory && matchesAvailability;
+            });
+            
+            // Apply sorting
+            sortProducts();
+            
+            // Reset to first page
+            currentPage = 1;
+            
+            // Update results count
+            document.getElementById('results-count').textContent = filteredProducts.length;
+            
+            // Render products
+            renderProducts();
+        }
+        
+        // Sort products
+        function sortProducts() {
+            filteredProducts.sort((a, b) => {
+                let aValue = a[currentSort.field];
+                let bValue = b[currentSort.field];
+                
+                // Handle different data types
+                if (typeof aValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+                } else {
+                    return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+                }
+            });
+        }
+        
+        // Render products
+        function renderProducts() {
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageProducts = filteredProducts.slice(startIndex, endIndex);
+            
+            // Render desktop table
+            renderDesktopTable(pageProducts);
+            
+            // Render mobile cards
+            renderMobileCards(pageProducts);
+            
+            // Update pagination
+            updatePagination(totalPages);
+        }
+        
+        // Render desktop table
+        function renderDesktopTable(pageProducts) {
+            const tbody = document.getElementById('products-table-body');
+            
+            tbody.innerHTML = pageProducts.map(product => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                        <div class="text-sm text-gray-500 line-clamp-2">${product.description}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            ${getCategoryDisplayName(product.category)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        ${formatCurrency(product.price)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-data">
+                        ${product.sku || '-'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span class="${product.stock <= 10 ? 'text-error font-medium' : ''}">${product.stock}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <label class="availability-toggle">
+                            <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleAvailability('${product.id}')">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button onclick="editProduct('${product.id}')" class="text-accent hover:text-accent-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button onclick="deleteProduct('${product.id}')" class="text-error hover:text-error-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Render mobile cards
+        function renderMobileCards(pageProducts) {
+            const container = document.getElementById('mobile-cards');
+            
+            container.innerHTML = pageProducts.map(product => `
+                <div class="mobile-product-card ${product.available ? 'available' : 'unavailable'} bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div class="flex items-start space-x-4">
+                        <img src="${product.image}" alt="${product.name}" class="product-image flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">${product.name}</h3>
+                                    <p class="text-sm text-gray-500 line-clamp-2">${product.description}</p>
+                                </div>
+                                <div class="flex space-x-2 ml-2">
+                                    <button onclick="editProduct('${product.id}')" class="p-2 text-accent hover:bg-accent-50 rounded-lg">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button onclick="deleteProduct('${product.id}')" class="p-2 text-error hover:bg-error-50 rounded-lg">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        ${getCategoryDisplayName(product.category)}
+                                    </span>
+                                    <span class="text-lg font-semibold text-gray-900">${formatCurrency(product.price)}</span>
+                                </div>
+                                <label class="availability-toggle">
+                                    <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleAvailability('${product.id}')">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <div class="flex items-center space-x-4">
+                                    <span>SKU: <span class="font-data">${product.sku || '-'}</span></span>
+                                    <span>Stock: <span class="${product.stock <= 10 ? 'text-error font-medium' : ''}">${product.stock}</span></span>
+                                </div>
+                                <span class="status-badge ${product.available ? 'status-success' : 'status-error'}">
+                                    ${product.available ? 'Disponible' : 'No Disponible'}
+                                </span>
+                            </div>
+                            
+                            ${product.variants && product.variants.length > 0 ? `
+                                <div class="mt-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        ${product.variants.map(variant => `<span class="variant-chip">${variant}</span>`).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Update pagination
+        function updatePagination(totalPages) {
+            document.getElementById('current-page').textContent = currentPage;
+            document.getElementById('total-pages').textContent = totalPages;
+            
+            const prevBtn = document.getElementById('prev-page');
+            const nextBtn = document.getElementById('next-page');
+            
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+        
+        // Toggle product availability
+        function toggleAvailability(productId) {
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                products[productIndex].available = !products[productIndex].available;
+                saveProducts();
+                filterProducts();
+                
+                const status = products[productIndex].available ? 'disponible' : 'no disponible';
+                showToast(`Producto marcado como ${status}`, 'success');
+            }
+        }
+        
+        // Show product modal
+        function showProductModal(product = null) {
+            editingProductId = product ? product.id : null;
+            productVariants = product ? [...product.variants] : [];
+            
+            // Update modal title
+            document.getElementById('modal-title').textContent = product ? 'Editar Producto' : 'Agregar Producto';
+            document.getElementById('save-btn').textContent = product ? 'Actualizar Producto' : 'Guardar Producto';
+            
+            // Fill form if editing
+            if (product) {
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-description').value = product.description;
+                document.getElementById('product-category').value = product.category;
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-sku').value = product.sku || '';
+                document.getElementById('product-stock').value = product.stock;
+                document.getElementById('product-available').checked = product.available;
+                document.getElementById('image-preview').src = product.image;
+            } else {
+                // Reset form
+                document.getElementById('product-form').reset();
+                document.getElementById('product-available').checked = true;
+                document.getElementById('image-preview').src = 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+            }
+            
+            // Render variants
+            renderVariants();
+            
+            // Show modal
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+        
+        // Edit product
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                showProductModal(product);
+            }
+        }
+        
+        // Delete product
+        function deleteProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('delete-product-name').textContent = product.name;
+                document.getElementById('delete-modal').classList.remove('hidden');
+                
+                // Store product ID for deletion
+                document.getElementById('confirm-delete-btn').onclick = () => confirmDelete(productId);
+            }
+        }
+        
+        // Confirm delete
+        function confirmDelete(productId) {
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                const productName = products[productIndex].name;
+                products.splice(productIndex, 1);
+                saveProducts();
+                filterProducts();
+                
+                document.getElementById('delete-modal').classList.add('hidden');
+                showToast(`Producto "${productName}" eliminado correctamente`, 'success');
+            }
+        }
+        
+        // Add variant
+        function addVariant() {
+            const input = document.getElementById('variant-input');
+            const variant = input.value.trim();
+            
+            if (variant && !productVariants.includes(variant)) {
+                productVariants.push(variant);
+                input.value = '';
+                renderVariants();
+            }
+        }
+        
+        // Remove variant
+        function removeVariant(index) {
+            productVariants.splice(index, 1);
+            renderVariants();
+        }
+        
+        // Render variants
+        function renderVariants() {
+            const container = document.getElementById('variants-container');
+            container.innerHTML = productVariants.map((variant, index) => `
+                <span class="variant-chip flex items-center space-x-1">
+                    <span>${variant}</span>
+                    <button type="button" onclick="removeVariant(${index})" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </span>
+            `).join('');
+        }
+        
+        // Handle image upload
+        function handleImageUpload(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Save product
+        function saveProduct(formData) {
+            const product = {
+                id: editingProductId || `PROD-${String(products.length + 1).padStart(3, '0')}`,
+                name: formData.get('name'),
+                description: formData.get('description'),
+                category: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                sku: formData.get('sku'),
+                stock: parseInt(formData.get('stock')) || 0,
+                available: formData.get('available') === 'on',
+                image: document.getElementById('image-preview').src,
+                variants: [...productVariants],
+                createdAt: editingProductId ? products.find(p => p.id === editingProductId).createdAt : new Date()
+            };
+            
+            if (editingProductId) {
+                // Update existing product
+                const productIndex = products.findIndex(p => p.id === editingProductId);
+                if (productIndex !== -1) {
+                    products[productIndex] = product;
+                }
+            } else {
+                // Add new product
+                products.unshift(product);
+            }
+            
+            saveProducts();
+            filterProducts();
+            
+            document.getElementById('product-modal').classList.add('hidden');
+            showToast(`Producto ${editingProductId ? 'actualizado' : 'agregado'} correctamente`, 'success');
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'border-green-200 bg-green-50' : type === 'error' ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}`;
+            
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        ${type === 'success' ? 
+                            '<svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>' :
+                            type === 'error' ?
+                            '<svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>' :
+                            '<svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+                        }
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button class="inline-flex text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.remove()">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeMockData();
+            filteredProducts = [...products];
+            
+            // Initial render
+            filterProducts();
+            
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Filter event listeners
+            document.getElementById('search-input').addEventListener('input', filterProducts);
+            document.getElementById('category-filter').addEventListener('change', filterProducts);
+            document.getElementById('availability-filter').addEventListener('change', filterProducts);
+            
+            // Add product button
+            document.getElementById('add-product-btn').addEventListener('click', function() {
+                showProductModal();
+            });
+            
+            // Pagination buttons
+            document.getElementById('prev-page').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderProducts();
+                }
+            });
+            
+            document.getElementById('next-page').addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderProducts();
+                }
+            });
+            
+            // Sort headers
+            document.querySelectorAll('.sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const field = this.dataset.sort;
+                    if (field) {
+                        if (currentSort.field === field) {
+                            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            currentSort.field = field;
+                            currentSort.direction = 'asc';
+                        }
+                        
+                        // Update sort icons
+                        document.querySelectorAll('.sortable-header').forEach(h => {
+                            h.classList.remove('sort-desc');
+                        });
+                        
+                        if (currentSort.direction === 'desc') {
+                            this.classList.add('sort-desc');
+                        }
+                        
+                        filterProducts();
+                    }
+                });
+            });
+            
+            // Modal close buttons
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('product-modal').classList.add('hidden');
+            });
+            
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                document.getElementById('product-modal').classList.add('hidden');
+            });
+            
+            // Delete modal buttons
+            document.getElementById('cancel-delete-btn').addEventListener('click', function() {
+                document.getElementById('delete-modal').classList.add('hidden');
+            });
+            
+            // Close modals on backdrop click
+            document.getElementById('product-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('delete-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+            
+            // Image upload
+            document.getElementById('image-input').addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    handleImageUpload(e.target.files[0]);
+                }
+            });
+            
+            // Add variant button
+            document.getElementById('add-variant-btn').addEventListener('click', addVariant);
+            
+            // Add variant on Enter key
+            document.getElementById('variant-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addVariant();
+                }
+            });
+            
+            // Product form submission
+            document.getElementById('product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                formData.set('name', document.getElementById('product-name').value);
+                formData.set('description', document.getElementById('product-description').value);
+                formData.set('category', document.getElementById('product-category').value);
+                formData.set('price', document.getElementById('product-price').value);
+                formData.set('sku', document.getElementById('product-sku').value);
+                formData.set('stock', document.getElementById('product-stock').value);
+                formData.set('available', document.getElementById('product-available').checked ? 'on' : 'off');
+                
+                // Validate required fields
+                if (!formData.get('name') || !formData.get('category') || !formData.get('price')) {
+                    showToast('Por favor completa todos los campos requeridos', 'error');
+                    return;
+                }
+                
+                saveProduct(formData);
+            });
+            
+            // Responsive layout detection
+            function updateLayout() {
+                const isDesktop = window.innerWidth >= 1024;
+                const desktopTable = document.getElementById('desktop-table');
+                const mobileCards = document.getElementById('mobile-cards');
+                
+                if (isDesktop) {
+                    desktopTable.classList.remove('hidden');
+                    mobileCards.classList.add('hidden');
+                } else {
+                    desktopTable.classList.add('hidden');
+                    mobileCards.classList.remove('hidden');
+                }
+            }
+            
+            window.addEventListener('resize', updateLayout);
+            updateLayout();
+        });
+        
+        // Global functions
+        window.toggleAvailability = toggleAvailability;
+        window.editProduct = editProduct;
+        window.deleteProduct = deleteProduct;
+        window.removeVariant = removeVariant;
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

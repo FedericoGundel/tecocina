@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo de Productos - Burger House</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/custom-beach-theme.css" />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fburgerhou6626back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-beach-sand">
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-sm border-bottom sticky-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between py-3">
+                <!-- Logo -->
+                <div class="d-flex align-items-center">
+                    <a href="product_catalog.html" class="text-decoration-none d-flex align-items-center">
+                        <div class="bg-beach-primary rounded-3 d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNGRkY0QzMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIyMCIgeD0iMCIgeT0iNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIxNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIyNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIwIiByeD0iMyIgZmlsbD0iI0ZGRDcwMCIvPgo8L3N2Zz4KPC9zdmc+" alt="Hamburguesa" class="w-6 h-6">
+                        </div>
+                        <span class="fs-4 fw-bold text-beach-dark">Burger House</span>
+                    </a>
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="d-none d-md-flex flex-fill mx-4" style="max-width: 400px;">
+                    <div class="position-relative w-100">
+                        <input type="search" id="searchInput" placeholder="Buscar hamburguesas, combos..." class="form-control ps-5" style="border: 1px solid var(--beach-border); background-color: white;" />
+                        <div class="position-absolute top-50 start-0 translate-middle-y ps-3">
+                            <i class="fas fa-search text-beach-brown"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart & Menu -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Cart Button -->
+                    <button id="cartToggle" class="btn position-relative text-beach-dark hover-beach-primary">
+                        <i class="fas fa-shopping-cart fs-5"></i>
+                        <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-beach-accent text-white d-none">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobileMenuToggle" class="btn d-md-none text-beach-dark hover-beach-primary">
+                        <i class="fas fa-bars fs-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search (Hidden by default) -->
+            <div id="mobileSearch" class="d-md-none pb-3 d-none">
+                <div class="position-relative">
+                    <input type="search" id="mobileSearchInput" placeholder="Buscar hamburguesas, combos..." class="form-control ps-5" style="border: 1px solid var(--beach-border); background-color: white;" />
+                    <div class="position-absolute top-50 start-0 translate-middle-y ps-3">
+                        <i class="fas fa-search text-beach-brown"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Menu -->
+    <nav id="mobileNav" class="d-md-none bg-white border-bottom d-none">
+        <div class="p-3">
+            <a href="product_catalog.html" class="d-block px-3 py-2 text-beach-primary fw-medium text-decoration-none">Catálogo</a>
+            <a href="shopping_cart.html" class="d-block px-3 py-2 text-beach-dark hover-beach-primary text-decoration-none">Carrito</a>
+            <a href="order_tracking.html" class="d-block px-3 py-2 text-beach-dark hover-beach-primary text-decoration-none">Seguir Pedido</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <h1 class="display-6 fw-bold text-beach-dark mb-2">Nuestro Menú</h1>
+            <p class="text-beach-brown fs-6">Descubre nuestras deliciosas hamburguesas, acompañamientos y combos</p>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="mb-4">
+            <div class="d-flex gap-2 overflow-auto pb-2 beach-scrollbar-hide">
+                <button class="category-filter btn btn-beach-primary text-nowrap active" data-category="all">
+                    Todos
+                </button>
+                <button class="category-filter btn btn-outline-beach-primary text-nowrap" data-category="burgers">
+                    Hamburguesas
+                </button>
+                <button class="category-filter btn btn-outline-beach-primary text-nowrap" data-category="sides">
+                    Acompañamientos
+                </button>
+                <button class="category-filter btn btn-outline-beach-primary text-nowrap" data-category="combos">
+                    Combos
+                </button>
+                <button class="category-filter btn btn-outline-beach-primary text-nowrap" data-category="drinks">
+                    Bebidas
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="row g-4">
+            <!-- Product cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="d-none text-center py-5">
+            <div class="spinner-border text-beach-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2 text-beach-brown">Cargando productos...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="d-none text-center py-5">
+            <i class="fas fa-search display-1 text-beach-brown mb-4"></i>
+            <h3 class="h5 fw-medium text-beach-dark mb-2">No se encontraron productos</h3>
+            <p class="text-beach-brown">Intenta con otros términos de búsqueda o categorías</p>
+        </div>
+    </main>
+
+    <!-- Offcanvas Cart -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+        <div class="offcanvas-header bg-white border-bottom">
+            <h5 class="offcanvas-title text-beach-dark">Tu Carrito</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0 d-flex flex-column">
+            <!-- Cart Items -->
+            <div id="cartItems" class="flex-fill overflow-auto p-3">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div id="cartFooter" class="border-top p-3 bg-white">
+                <div class="d-grid gap-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-medium text-beach-dark">Total:</span>
+                        <span id="cartTotal" class="h5 fw-bold text-beach-primary mb-0">$0</span>
+                    </div>
+                    <button id="proceedToCart" class="btn btn-beach-primary w-100">
+                        Ver Carrito Completo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Mobile Cart CTA -->
+    <div id="stickyCartCTA" class="fixed-bottom d-md-none bg-white border-top p-3 d-none">
+        <button class="btn btn-beach-primary w-100 d-flex align-items-center justify-content-between">
+            <span>Ver Carrito</span>
+            <div class="d-flex align-items-center gap-2">
+                <span id="stickyCartCount" class="badge bg-beach-secondary">0</span>
+                <span id="stickyCartTotal">$0</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+    <!-- Product Template -->
+    <template id="productCardTemplate">
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="card h-100 beach-card product-card" data-category data-product-id>
+                <div class="position-relative overflow-hidden">
+                    <img class="card-img-top lazy-load" style="height: 200px; object-fit: cover;" data-src alt loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-beach-accent category-badge"></span>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-beach-dark product-name"></h5>
+                    <p class="card-text text-beach-brown small mb-3 product-description"></p>
+                    
+                    <!-- Product Options -->
+                    <div class="product-options mb-3"></div>
+                    
+                    <div class="mt-auto d-flex align-items-center justify-content-between">
+                        <div class="d-flex flex-column">
+                            <span class="h5 fw-bold text-beach-primary product-price"></span>
+                            <span class="text-decoration-line-through small text-beach-brown original-price d-none"></span>
+                        </div>
+                        
+                        <!-- Quantity Controls -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="quantity-controls d-none d-flex align-items-center gap-2">
+                                <button class="quantity-decrease btn btn-sm btn-outline-beach-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-minus small"></i>
+                                </button>
+                                <span class="quantity-display fw-medium text-beach-dark">0</span>
+                                <button class="quantity-increase btn btn-sm btn-outline-beach-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-plus small"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn btn btn-beach-primary btn-sm">
+                                Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="cartItemTemplate">
+        <div class="cart-item d-flex align-items-center gap-3 py-3 border-bottom" data-product-id>
+            <img class="rounded" style="width: 48px; height: 48px; object-fit: cover;" src alt />
+            <div class="flex-fill">
+                <h6 class="fw-medium text-beach-dark small mb-0 item-name"></h6>
+                <p class="text-beach-brown small mb-1 item-options"></p>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="cart-quantity-decrease btn btn-sm btn-outline-beach-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                            <i class="fas fa-minus small"></i>
+                        </button>
+                        <span class="cart-quantity fw-medium small">1</span>
+                        <button class="cart-quantity-increase btn btn-sm btn-outline-beach-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                            <i class="fas fa-plus small"></i>
+                        </button>
+                    </div>
+                    <span class="item-total fw-medium text-beach-primary small"></span>
+                </div>
+            </div>
+            <button class="remove-item btn btn-sm text-danger">
+                <i class="fas fa-trash small"></i>
+            </button>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Product Data
+        const products = [
+            {
+                id: 1,
+                name: "Burger Clásica",
+                description: "Carne de res, lechuga, tomate, cebolla y salsa especial",
+                price: 2500,
+                category: "burgers",
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Tamaño", type: "select", choices: [
+                        { label: "Simple", price: 0 },
+                        { label: "Doble", price: 800 }
+                    ]}
+                ]
+            },
+            {
+                id: 2,
+                name: "Burger BBQ",
+                description: "Carne de res, bacon, cebolla caramelizada y salsa BBQ",
+                price: 3200,
+                category: "burgers",
+                image: "https://images.unsplash.com/photo-1553979459-d2229ba7433a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Tamaño", type: "select", choices: [
+                        { label: "Simple", price: 0 },
+                        { label: "Doble", price: 900 }
+                    ]}
+                ]
+            },
+            {
+                id: 3,
+                name: "Burger Veggie",
+                description: "Medallón de quinoa y vegetales, lechuga, tomate y palta",
+                price: 2800,
+                category: "burgers",
+                image: "https://images.unsplash.com/photo-1525059696034-4967a729002e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Extras", type: "checkbox", choices: [
+                        { label: "Queso vegano", price: 300 },
+                        { label: "Palta extra", price: 200 }
+                    ]}
+                ]
+            },
+            {
+                id: 4,
+                name: "Papas Fritas",
+                description: "Papas cortadas a mano, crujientes y doradas",
+                price: 1200,
+                category: "sides",
+                image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Tamaño", type: "select", choices: [
+                        { label: "Chicas", price: 0 },
+                        { label: "Medianas", price: 300 },
+                        { label: "Grandes", price: 600 }
+                    ]}
+                ]
+            },
+            {
+                id: 5,
+                name: "Aros de Cebolla",
+                description: "Aros de cebolla rebozados y fritos hasta quedar dorados",
+                price: 1500,
+                category: "sides",
+                image: "https://images.unsplash.com/photo-1639024471283-03518883512d?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: []
+            },
+            {
+                id: 6,
+                name: "Combo Clásico",
+                description: "Burger Clásica + Papas Medianas + Gaseosa 500ml",
+                price: 3500,
+                originalPrice: 4200,
+                category: "combos",
+                image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Bebida", type: "select", choices: [
+                        { label: "Coca Cola", price: 0 },
+                        { label: "Sprite", price: 0 },
+                        { label: "Fanta", price: 0 }
+                    ]}
+                ]
+            },
+            {
+                id: 7,
+                name: "Combo BBQ",
+                description: "Burger BBQ + Papas Grandes + Gaseosa 500ml + Aros de Cebolla",
+                price: 4800,
+                originalPrice: 6200,
+                category: "combos",
+                image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Bebida", type: "select", choices: [
+                        { label: "Coca Cola", price: 0 },
+                        { label: "Sprite", price: 0 },
+                        { label: "Fanta", price: 0 }
+                    ]}
+                ]
+            },
+            {
+                id: 8,
+                name: "Coca Cola",
+                description: "Gaseosa Coca Cola 500ml",
+                price: 800,
+                category: "drinks",
+                image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3",
+                options: [
+                    { name: "Tamaño", type: "select", choices: [
+                        { label: "500ml", price: 0 },
+                        { label: "1L", price: 400 }
+                    ]}
+                ]
+            }
+        ];
+
+        // Cart Management
+        let cart = JSON.parse(localStorage.getItem('burgerHouseCart')) || [];
+
+        // DOM Elements
+        const productsGrid = document.getElementById('productsGrid');
+        const cartOffcanvas = new bootstrap.Offcanvas(document.getElementById('cartOffcanvas'));
+        const cartItems = document.getElementById('cartItems');
+        const cartBadge = document.getElementById('cartBadge');
+        const cartTotal = document.getElementById('cartTotal');
+        const stickyCartCTA = document.getElementById('stickyCartCTA');
+        const stickyCartCount = document.getElementById('stickyCartCount');
+        const stickyCartTotal = document.getElementById('stickyCartTotal');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            updateCartUI();
+            setupEventListeners();
+            setupLazyLoading();
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+                const mobileNav = document.getElementById('mobileNav');
+                const mobileSearch = document.getElementById('mobileSearch');
+                mobileNav.classList.toggle('d-none');
+                mobileSearch.classList.toggle('d-none');
+            });
+
+            // Cart toggle
+            document.getElementById('cartToggle').addEventListener('click', () => cartOffcanvas.show());
+
+            // Sticky cart CTA
+            document.getElementById('stickyCartCTA').addEventListener('click', function() {
+                window.location.href = 'shopping_cart.html';
+            });
+
+            // Proceed to cart
+            document.getElementById('proceedToCart').addEventListener('click', function() {
+                window.location.href = 'shopping_cart.html';
+            });
+
+            // Category filters
+            document.querySelectorAll('.category-filter').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active state
+                    document.querySelectorAll('.category-filter').forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.className = btn.className.replace('btn-beach-primary', 'btn-outline-beach-primary');
+                    });
+                    this.classList.add('active');
+                    this.className = this.className.replace('btn-outline-beach-primary', 'btn-beach-primary');
+
+                    // Filter products
+                    const category = this.dataset.category;
+                    filterProducts(category);
+                });
+            });
+
+            // Search functionality
+            const searchInputs = [document.getElementById('searchInput'), document.getElementById('mobileSearchInput')];
+            searchInputs.forEach(input => {
+                if (input) {
+                    input.addEventListener('input', function() {
+                        const query = this.value.toLowerCase();
+                        searchProducts(query);
+                    });
+                }
+            });
+        }
+
+        // Render Products
+        function renderProducts(productsToRender = products) {
+            productsGrid.innerHTML = '';
+            
+            if (productsToRender.length === 0) {
+                document.getElementById('emptyState').classList.remove('d-none');
+                return;
+            }
+
+            document.getElementById('emptyState').classList.add('d-none');
+
+            productsToRender.forEach(product => {
+                const productCard = createProductCard(product);
+                productsGrid.appendChild(productCard);
+            });
+
+            // Setup lazy loading for new images
+            setupLazyLoading();
+        }
+
+        // Create Product Card
+        function createProductCard(product) {
+            const template = document.getElementById('productCardTemplate');
+            const card = template.content.cloneNode(true);
+            
+            const cardElement = card.querySelector('.product-card');
+            cardElement.dataset.category = product.category;
+            cardElement.dataset.productId = product.id;
+
+            // Set image
+            const img = card.querySelector('.lazy-load');
+            img.dataset.src = product.image;
+            img.alt = product.name;
+
+            // Set category badge
+            const categoryBadge = card.querySelector('.category-badge');
+            const categoryNames = {
+                'burgers': 'Hamburguesa',
+                'sides': 'Acompañamiento',
+                'combos': 'Combo',
+                'drinks': 'Bebida'
+            };
+            categoryBadge.textContent = categoryNames[product.category];
+
+            // Set product info
+            card.querySelector('.product-name').textContent = product.name;
+            card.querySelector('.product-description').textContent = product.description;
+            card.querySelector('.product-price').textContent = formatPrice(product.price);
+
+            // Set original price if exists
+            if (product.originalPrice) {
+                const originalPrice = card.querySelector('.original-price');
+                originalPrice.textContent = formatPrice(product.originalPrice);
+                originalPrice.classList.remove('d-none');
+            }
+
+            // Render options
+            const optionsContainer = card.querySelector('.product-options');
+            if (product.options && product.options.length > 0) {
+                product.options.forEach(option => {
+                    const optionElement = createOptionElement(option, product.id);
+                    optionsContainer.appendChild(optionElement);
+                });
+            }
+
+            // Setup quantity controls
+            const quantityControls = card.querySelector('.quantity-controls');
+            const quantityDisplay = card.querySelector('.quantity-display');
+            const addToCartBtn = card.querySelector('.add-to-cart-btn');
+            const decreaseBtn = card.querySelector('.quantity-decrease');
+            const increaseBtn = card.querySelector('.quantity-increase');
+
+            // Check if product is already in cart
+            const cartItem = cart.find(item => item.id === product.id);
+            if (cartItem) {
+                quantityDisplay.textContent = cartItem.quantity;
+                quantityControls.classList.remove('d-none');
+                addToCartBtn.classList.add('d-none');
+            }
+
+            // Add to cart functionality
+            addToCartBtn.addEventListener('click', function() {
+                addToCart(product, cardElement);
+            });
+
+            // Quantity controls
+            decreaseBtn.addEventListener('click', function() {
+                updateQuantity(product.id, -1, cardElement);
+            });
+
+            increaseBtn.addEventListener('click', function() {
+                updateQuantity(product.id, 1, cardElement);
+            });
+
+            return card;
+        }
+
+        // Create Option Element
+        function createOptionElement(option, productId) {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'mb-2';
+
+            const label = document.createElement('label');
+            label.className = 'form-label small fw-medium text-beach-dark';
+            label.textContent = option.name;
+            optionDiv.appendChild(label);
+
+            if (option.type === 'select') {
+                const select = document.createElement('select');
+                select.className = 'form-select form-select-sm';
+                select.dataset.optionName = option.name;
+                select.dataset.productId = productId;
+
+                option.choices.forEach(choice => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = choice.label;
+                    optionElement.dataset.price = choice.price;
+                    optionElement.textContent = `${choice.label}${choice.price > 0 ? ` (+${formatPrice(choice.price)})` : ''}`;
+                    select.appendChild(optionElement);
+                });
+
+                select.addEventListener('change', function() {
+                    updateProductPrice(productId);
+                });
+
+                optionDiv.appendChild(select);
+            }
+
+            return optionDiv;
+        }
+
+        // Add to Cart
+        function addToCart(product, cardElement) {
+            const options = getSelectedOptions(cardElement);
+            const finalPrice = calculateProductPrice(product, options);
+
+            const cartItem = {
+                id: product.id,
+                name: product.name,
+                price: finalPrice,
+                basePrice: product.price,
+                quantity: 1,
+                image: product.image,
+                options: options
+            };
+
+            cart.push(cartItem);
+            saveCart();
+            updateCartUI();
+            updateProductCard(cardElement, 1);
+            showToast(`${product.name} agregado al carrito`);
+        }
+
+        // Update Quantity
+        function updateQuantity(productId, change, cardElement) {
+            const cartItemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (cartItemIndex !== -1) {
+                cart[cartItemIndex].quantity += change;
+                
+                if (cart[cartItemIndex].quantity <= 0) {
+                    cart.splice(cartItemIndex, 1);
+                    updateProductCard(cardElement, 0);
+                } else {
+                    updateProductCard(cardElement, cart[cartItemIndex].quantity);
+                }
+                
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        // Update Product Card
+        function updateProductCard(cardElement, quantity) {
+            const quantityControls = cardElement.querySelector('.quantity-controls');
+            const quantityDisplay = cardElement.querySelector('.quantity-display');
+            const addToCartBtn = cardElement.querySelector('.add-to-cart-btn');
+
+            if (quantity > 0) {
+                quantityDisplay.textContent = quantity;
+                quantityControls.classList.remove('d-none');
+                addToCartBtn.classList.add('d-none');
+            } else {
+                quantityControls.classList.add('d-none');
+                addToCartBtn.classList.remove('d-none');
+            }
+        }
+
+        // Get Selected Options
+        function getSelectedOptions(cardElement) {
+            const options = {};
+            const selects = cardElement.querySelectorAll('select[data-option-name]');
+            
+            selects.forEach(select => {
+                const optionName = select.dataset.optionName;
+                const selectedOption = select.options[select.selectedIndex];
+                options[optionName] = {
+                    label: selectedOption.value,
+                    price: parseInt(selectedOption.dataset.price) || 0
+                };
+            });
+
+            return options;
+        }
+
+        // Calculate Product Price
+        function calculateProductPrice(product, options) {
+            let price = product.price;
+            
+            Object.values(options).forEach(option => {
+                price += option.price;
+            });
+
+            return price;
+        }
+
+        // Update Product Price
+        function updateProductPrice(productId) {
+            const product = products.find(p => p.id === productId);
+            const cardElement = document.querySelector(`[data-product-id="${productId}"]`);
+            const options = getSelectedOptions(cardElement);
+            const finalPrice = calculateProductPrice(product, options);
+            
+            cardElement.querySelector('.product-price').textContent = formatPrice(finalPrice);
+        }
+
+        // Filter Products
+        function filterProducts(category) {
+            let filteredProducts = products;
+            
+            if (category !== 'all') {
+                filteredProducts = products.filter(product => product.category === category);
+            }
+            
+            renderProducts(filteredProducts);
+        }
+
+        // Search Products
+        function searchProducts(query) {
+            if (!query) {
+                renderProducts();
+                return;
+            }
+
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(query) ||
+                product.description.toLowerCase().includes(query)
+            );
+            
+            renderProducts(filteredProducts);
+        }
+
+        // Cart UI Management
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // Update cart badge
+            if (totalItems > 0) {
+                cartBadge.textContent = totalItems;
+                cartBadge.classList.remove('d-none');
+            } else {
+                cartBadge.classList.add('d-none');
+            }
+
+            // Update cart total
+            cartTotal.textContent = formatPrice(totalPrice);
+
+            // Update sticky cart CTA
+            if (totalItems > 0) {
+                stickyCartCTA.classList.remove('d-none');
+                stickyCartCount.textContent = totalItems;
+                stickyCartTotal.textContent = formatPrice(totalPrice);
+            } else {
+                stickyCartCTA.classList.add('d-none');
+            }
+
+            // Render cart items
+            renderCartItems();
+        }
+
+        // Render Cart Items
+        function renderCartItems() {
+            cartItems.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart display-1 text-beach-brown mb-4"></i>
+                        <p class="text-beach-brown">Tu carrito está vacío</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cart.forEach(item => {
+                const cartItem = createCartItem(item);
+                cartItems.appendChild(cartItem);
+            });
+        }
+
+        // Create Cart Item
+        function createCartItem(item) {
+            const template = document.getElementById('cartItemTemplate');
+            const cartItem = template.content.cloneNode(true);
+            
+            const itemElement = cartItem.querySelector('.cart-item');
+            itemElement.dataset.productId = item.id;
+
+            // Set item info
+            cartItem.querySelector('img').src = item.image;
+            cartItem.querySelector('img').alt = item.name;
+            cartItem.querySelector('.item-name').textContent = item.name;
+            cartItem.querySelector('.cart-quantity').textContent = item.quantity;
+            cartItem.querySelector('.item-total').textContent = formatPrice(item.price * item.quantity);
+
+            // Set options text
+            const optionsText = Object.entries(item.options || {})
+                .map(([key, value]) => `${key}: ${value.label}`)
+                .join(', ');
+            cartItem.querySelector('.item-options').textContent = optionsText;
+
+            // Setup quantity controls
+            const decreaseBtn = cartItem.querySelector('.cart-quantity-decrease');
+            const increaseBtn = cartItem.querySelector('.cart-quantity-increase');
+            const removeBtn = cartItem.querySelector('.remove-item');
+
+            decreaseBtn.addEventListener('click', function() {
+                updateCartItemQuantity(item.id, -1);
+            });
+
+            increaseBtn.addEventListener('click', function() {
+                updateCartItemQuantity(item.id, 1);
+            });
+
+            removeBtn.addEventListener('click', function() {
+                removeFromCart(item.id);
+            });
+
+            return cartItem;
+        }
+
+        // Update Cart Item Quantity
+        function updateCartItemQuantity(productId, change) {
+            const cartItemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (cartItemIndex !== -1) {
+                cart[cartItemIndex].quantity += change;
+                
+                if (cart[cartItemIndex].quantity <= 0) {
+                    cart.splice(cartItemIndex, 1);
+                }
+                
+                saveCart();
+                updateCartUI();
+                
+                // Update product card if visible
+                const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+                if (productCard) {
+                    const cartItem = cart.find(item => item.id === productId);
+                    updateProductCard(productCard, cartItem ? cartItem.quantity : 0);
+                }
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            updateCartUI();
+            
+            // Update product card if visible
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+            if (productCard) {
+                updateProductCard(productCard, 0);
+            }
+            
+            showToast('Producto eliminado del carrito');
+        }
+
+        // Save Cart to localStorage
+        function saveCart() {
+            localStorage.setItem('burgerHouseCart', JSON.stringify(cart));
+        }
+
+        // Format Price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Show Toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast align-items-center border-0';
+            toast.classList.add(type === 'success' ? 'bg-beach-primary' : 'bg-danger');
+            toast.setAttribute('role', 'alert');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body text-dark d-flex align-items-center">
+                        <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => toast.remove());
+        }
+
+        // Lazy Loading Setup
+        function setupLazyLoading() {
+            const images = document.querySelectorAll('.lazy-load');
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy-load');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => imageObserver.observe(img));
+        }
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

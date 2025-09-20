@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors - Amarillo Sol */
+  --color-primary: #F9C74F; /* amarillo-sol */
+  --color-primary-50: #FEFCF4;
+  --color-primary-100: #FEF9E9;
+  --color-primary-200: #FDF2D3;
+  --color-primary-300: #FCEBBD;
+  --color-primary-400: #FAE4A7;
+  --color-primary-500: #F9C74F; /* amarillo-sol */
+  --color-primary-600: #F7B82C;
+  --color-primary-700: #F5A909;
+  --color-primary-800: #D18F08;
+  --color-primary-900: #AE7506;
+
+  /* Secondary Colors - Naranja Dorado */
+  --color-secondary: #F9844A; /* naranja-dorado */
+  --color-secondary-50: #FEF6F2;
+  --color-secondary-100: #FDEDE5;
+  --color-secondary-200: #FBDBCB;
+  --color-secondary-300: #F9C9B1;
+  --color-secondary-400: #F7B797;
+  --color-secondary-500: #F9844A; /* naranja-dorado */
+  --color-secondary-600: #F76B27;
+  --color-secondary-700: #F55204;
+  --color-secondary-800: #D14403;
+  --color-secondary-900: #AE3903;
+
+  /* Accent Colors - Azul Cielo */
+  --color-accent: #0096C7; /* azul-cielo */
+  --color-accent-50: #E6F6FC;
+  --color-accent-100: #CCECF9;
+  --color-accent-200: #99D9F3;
+  --color-accent-300: #66C6ED;
+  --color-accent-400: #33B3E7;
+  --color-accent-500: #0096C7; /* azul-cielo */
+  --color-accent-600: #0078A0;
+  --color-accent-700: #005A79;
+  --color-accent-800: #003C52;
+  --color-accent-900: #001E2B;
+
+  /* Background Colors */
+  --color-background: #EADCA6; /* arena/beige */
+  --color-surface: #FFFFFF; /* white */
+  --color-surface-light: #90E0EF; /* celeste claro */
+
+  /* Text Colors */
+  --color-text-primary: #0D0D0D; /* negro-profundo */
+  --color-text-secondary: #6A3E2F; /* marrón-hamburguesa */
+  --color-text-muted: #6B6B6B; /* for subtle text */
+
+  /* Status Colors */
+  --color-success: #28A745; /* green-600 */
+  --color-success-50: #F0F9F3;
+  --color-success-100: #E1F3E7;
+  --color-success-200: #C3E7CF;
+  --color-success-300: #A5DBB7;
+  --color-success-400: #87CF9F;
+  --color-success-500: #28A745; /* green-600 */
+  --color-success-600: #239B3E;
+  --color-success-700: #1E8F37;
+  --color-success-800: #198330;
+  --color-success-900: #147729;
+
+  --color-warning: #FFC107; /* amber-400 */
+  --color-warning-50: #FFFBF0;
+  --color-warning-100: #FFF7E0;
+  --color-warning-200: #FFEFC1;
+  --color-warning-300: #FFE7A2;
+  --color-warning-400: #FFDF83;
+  --color-warning-500: #FFC107; /* amber-400 */
+  --color-warning-600: #E6AD06;
+  --color-warning-700: #CC9905;
+  --color-warning-800: #B38504;
+  --color-warning-900: #997103;
+
+  --color-error: #DC3545; /* red-600 */
+  --color-error-50: #FDF2F3;
+  --color-error-100: #FCE5E7;
+  --color-error-200: #F9CBCF;
+  --color-error-300: #F6B1B7;
+  --color-error-400: #F3979F;
+  --color-error-500: #DC3545; /* red-600 */
+  --color-error-600: #C62E3E;
+  --color-error-700: #B02737;
+  --color-error-800: #9A2030;
+  --color-error-900: #841929;
+
+  /* Border Colors */
+  --color-border: #C4B79F; /* darker arena */
+  --color-border-light: #E0D6B8; /* lighter arena */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-text-primary font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Animation utilities */
+  .animate-scale-press {
+    transform: scale(0.98);
+    transition: transform 150ms ease-out;
+  }
+
+  .animate-expand-height {
+    transition: height 300ms ease-in-out;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+
+  .animate-border-highlight {
+    transition: border-color 200ms ease-in-out;
+  }
+
+  .animate-swipe-remove {
+    transition: transform 250ms ease-out, opacity 250ms ease-out;
+  }
+
+  .animate-toast-slide {
+    animation: toast-slide 4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200px 0;
+    }
+    100% {
+      background-position: calc(200px + 100%) 0;
+    }
+  }
+
+  @keyframes toast-slide {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    90% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  /* Touch target optimization */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-600 text-text-primary font-semibold py-3 px-6 rounded-lg transition-colors duration-200 touch-target shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 touch-target;
+  }
+
+  .btn-accent {
+    @apply bg-accent hover:bg-accent-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 touch-target;
+  }
+
+  .card {
+    @apply bg-surface rounded-xl shadow-sm border border-border-light;
+  }
+
+  .card-elevated {
+    @apply bg-surface rounded-xl shadow-md border border-border-light;
+  }
+
+  .card-light {
+    @apply bg-surface-light rounded-xl shadow-sm border border-border-light;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-border rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200 bg-surface text-text-primary;
+  }
+}

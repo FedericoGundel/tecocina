@@ -1,0 +1,18 @@
+{
+  "name": "burger-house",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {
+    "@dhiwise/component-tagger": "^1.0.10"
+  },
+  "scripts": {
+    "build:css": "npx @dhiwise/component-tagger",
+    "watch:css": "npx @dhiwise/component-tagger",
+    "dev": "npm run watch:css"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+  }
+}

@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --color-primary: #F9C74F; /* yellow-400 */
+  --color-primary-50: #FFFBEB; /* yellow-50 */
+  --color-primary-100: #FEF3C7; /* yellow-100 */
+  --color-primary-200: #FDE68A; /* yellow-200 */
+  --color-primary-300: #FCD34D; /* yellow-300 */
+  --color-primary-400: #F9C74F; /* yellow-400 */
+  --color-primary-500: #F59E0B; /* yellow-500 */
+  --color-primary-600: #D97706; /* yellow-600 */
+  --color-primary-700: #B45309; /* yellow-700 */
+  --color-primary-800: #92400E; /* yellow-800 */
+  --color-primary-900: #78350F; /* yellow-900 */
+
+  /* Secondary Colors */
+  --color-secondary: #F9844A; /* orange-400 */
+  --color-secondary-50: #FFF7ED; /* orange-50 */
+  --color-secondary-100: #FFEDD5; /* orange-100 */
+  --color-secondary-200: #FED7AA; /* orange-200 */
+  --color-secondary-300: #FDBA74; /* orange-300 */
+  --color-secondary-400: #F9844A; /* orange-400 */
+  --color-secondary-500: #F97316; /* orange-500 */
+  --color-secondary-600: #EA580C; /* orange-600 */
+  --color-secondary-700: #C2410C; /* orange-700 */
+  --color-secondary-800: #9A3412; /* orange-800 */
+  --color-secondary-900: #7C2D12; /* orange-900 */
+
+  /* Accent Colors */
+  --color-accent: #0096C7; /* sky-600 */
+  --color-accent-50: #F0F9FF; /* sky-50 */
+  --color-accent-100: #E0F2FE; /* sky-100 */
+  --color-accent-200: #BAE6FD; /* sky-200 */
+  --color-accent-300: #7DD3FC; /* sky-300 */
+  --color-accent-400: #38BDF8; /* sky-400 */
+  --color-accent-500: #0EA5E9; /* sky-500 */
+  --color-accent-600: #0096C7; /* sky-600 */
+  --color-accent-700: #0369A1; /* sky-700 */
+  --color-accent-800: #075985; /* sky-800 */
+  --color-accent-900: #0C4A6E; /* sky-900 */
+
+  /* Background Colors */
+  --color-background: #FEFEFE; /* gray-50 */
+  --color-surface: #EADCA6; /* yellow-200 */
+
+  /* Text Colors */
+  --color-text-primary: #0D0D0D; /* gray-900 */
+  --color-text-secondary: #6A3E2F; /* amber-800 */
+
+  /* Status Colors */
+  --color-success: #22C55E; /* green-500 */
+  --color-success-50: #F0FDF4; /* green-50 */
+  --color-success-100: #DCFCE7; /* green-100 */
+  --color-success-500: #22C55E; /* green-500 */
+  --color-success-600: #16A34A; /* green-600 */
+  --color-success-700: #15803D; /* green-700 */
+
+  --color-warning: #F59E0B; /* amber-500 */
+  --color-warning-50: #FFFBEB; /* amber-50 */
+  --color-warning-100: #FEF3C7; /* amber-100 */
+  --color-warning-500: #F59E0B; /* amber-500 */
+  --color-warning-600: #D97706; /* amber-600 */
+  --color-warning-700: #B45309; /* amber-700 */
+
+  --color-error: #EF4444; /* red-500 */
+  --color-error-50: #FEF2F2; /* red-50 */
+  --color-error-100: #FEE2E2; /* red-100 */
+  --color-error-500: #EF4444; /* red-500 */
+  --color-error-600: #DC2626; /* red-600 */
+  --color-error-700: #B91C1C; /* red-700 */
+
+  /* Border Colors */
+  --color-border: #E5E7EB; /* gray-200 */
+  --color-border-light: #F3F4F6; /* gray-100 */
+
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  /* Animation Timings */
+  --timing-fast: 50ms;
+  --timing-normal: 150ms;
+  --timing-medium: 200ms;
+  --timing-slow: 300ms;
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .font-data {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-gray-900 px-4 py-2 rounded-lg font-medium transition-all duration-150 ease-out hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white px-4 py-2 rounded-lg font-medium transition-all duration-150 ease-out hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white px-4 py-2 rounded-lg font-medium transition-all duration-150 ease-out hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-shadow duration-200 ease-out hover:shadow-md;
+  }
+
+  .card-surface {
+    @apply bg-surface rounded-lg shadow-sm border border-gray-200 p-6 transition-shadow duration-200 ease-out hover:shadow-md;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-success {
+    @apply bg-success-100 text-success-700;
+  }
+
+  .status-warning {
+    @apply bg-warning-100 text-warning-700;
+  }
+
+  .status-error {
+    @apply bg-error-100 text-error-700;
+  }
+
+  .toast {
+    @apply fixed top-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm transform transition-all duration-300 ease-in-out;
+  }
+
+  .floating-action {
+    @apply fixed bottom-6 right-6 bg-primary text-gray-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ease-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+}
+
+@layer utilities {
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .bg-surface {
+    background-color: var(--color-surface);
+  }
+
+  .transition-micro {
+    transition-duration: var(--timing-fast);
+    transition-timing-function: ease-out;
+  }
+
+  .transition-normal {
+    transition-duration: var(--timing-normal);
+    transition-timing-function: ease-out;
+  }
+
+  .transition-medium {
+    transition-duration: var(--timing-medium);
+    transition-timing-function: ease-out;
+  }
+
+  .transition-layout {
+    transition-duration: var(--timing-slow);
+    transition-timing-function: ease-in-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

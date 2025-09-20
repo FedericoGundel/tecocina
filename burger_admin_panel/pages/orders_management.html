@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Pedidos - Burger Admin Panel</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        .order-card {
+            transition: all 0.2s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .kanban-column {
+            min-height: 500px;
+        }
+        
+        .status-pending { border-left: 4px solid #F59E0B; }
+        .status-preparation { border-left: 4px solid #0096C7; }
+        .status-ready { border-left: 4px solid #22C55E; }
+        .status-route { border-left: 4px solid #F9844A; }
+        .status-delivered { border-left: 4px solid #10B981; }
+        .status-cancelled { border-left: 4px solid #EF4444; }
+        
+        .toast {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .mobile-tabs {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .mobile-tabs::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fburgeradm6574back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <h1 class="text-xl font-semibold text-gray-900">Gestión de Pedidos</h1>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="orders_management.html" class="text-primary font-medium border-b-2 border-primary pb-1">Pedidos</a>
+                    <a href="products_management.html" class="text-gray-600 hover:text-gray-900 transition-colors">Productos</a>
+                    <a href="kitchen_display_mode.html" class="text-gray-600 hover:text-gray-900 transition-colors">Cocina</a>
+                    <a href="business_settings.html" class="text-gray-600 hover:text-gray-900 transition-colors">Configuración</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-2 space-y-1">
+                <a href="orders_management.html" class="block px-3 py-2 text-primary font-medium bg-primary-50 rounded-lg">Pedidos</a>
+                <a href="products_management.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Productos</a>
+                <a href="kitchen_display_mode.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Cocina</a>
+                <a href="business_settings.html" class="block px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Configuración</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Toolbar -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <!-- Left Side - Filters -->
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <!-- Date Range -->
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Fecha:</label>
+                        <input type="date" id="date-from" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+                        <span class="text-gray-500">-</span>
+                        <input type="date" id="date-to" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+                    </div>
+                    
+                    <!-- Status Filter -->
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Estado:</label>
+                        <select id="status-filter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value>Todos</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="preparation">En Preparación</option>
+                            <option value="ready">Listo</option>
+                            <option value="route">En Camino</option>
+                            <option value="delivered">Entregado</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Payment Method Filter -->
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Pago:</label>
+                        <select id="payment-filter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value>Todos</option>
+                            <option value="cash">Efectivo</option>
+                            <option value="card">Tarjeta</option>
+                            <option value="transfer">Transferencia</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Search and Actions -->
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Buscar por número o cliente..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-full sm:w-64" />
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Refresh Button -->
+                    <button id="refresh-btn" class="btn-primary flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Kanban Board -->
+        <div id="desktop-kanban" class="hidden lg:block">
+            <div class="grid grid-cols-6 gap-4">
+                <!-- Pending Column -->
+                <div class="kanban-column">
+                    <div class="bg-warning-50 border border-warning-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-warning-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                            </svg>
+                            Pendiente
+                        </h3>
+                        <p class="text-sm text-warning-600 mt-1">
+                            <span id="pending-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="pending-orders" class="space-y-3"></div>
+                </div>
+                
+                <!-- In Preparation Column -->
+                <div class="kanban-column">
+                    <div class="bg-accent-50 border border-accent-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-accent-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            En Preparación
+                        </h3>
+                        <p class="text-sm text-accent-600 mt-1">
+                            <span id="preparation-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="preparation-orders" class="space-y-3"></div>
+                </div>
+                
+                <!-- Ready Column -->
+                <div class="kanban-column">
+                    <div class="bg-success-50 border border-success-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-success-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Listo
+                        </h3>
+                        <p class="text-sm text-success-600 mt-1">
+                            <span id="ready-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="ready-orders" class="space-y-3"></div>
+                </div>
+                
+                <!-- On Route Column -->
+                <div class="kanban-column">
+                    <div class="bg-secondary-50 border border-secondary-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-secondary-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707L16 7.586V7a1 1 0 00-1-1h-1z"/>
+                            </svg>
+                            En Camino
+                        </h3>
+                        <p class="text-sm text-secondary-600 mt-1">
+                            <span id="route-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="route-orders" class="space-y-3"></div>
+                </div>
+                
+                <!-- Delivered Column -->
+                <div class="kanban-column">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-green-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Entregado
+                        </h3>
+                        <p class="text-sm text-green-600 mt-1">
+                            <span id="delivered-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="delivered-orders" class="space-y-3"></div>
+                </div>
+                
+                <!-- Cancelled Column -->
+                <div class="kanban-column">
+                    <div class="bg-error-50 border border-error-200 rounded-lg p-3 mb-4">
+                        <h3 class="font-semibold text-error-800 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            Cancelado
+                        </h3>
+                        <p class="text-sm text-error-600 mt-1">
+                            <span id="cancelled-count">0</span> pedidos
+                        </p>
+                    </div>
+                    <div id="cancelled-orders" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Tabs -->
+        <div id="mobile-tabs" class="lg:hidden">
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-4">
+                <div class="flex overflow-x-auto mobile-tabs">
+                    <button class="tab-btn active flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-primary text-primary" data-status="pending">
+                        Pendiente (<span class="pending-mobile-count">0</span>)
+                    </button>
+                    <button class="tab-btn flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-status="preparation">
+                        Preparación (<span class="preparation-mobile-count">0</span>)
+                    </button>
+                    <button class="tab-btn flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-status="ready">
+                        Listo (<span class="ready-mobile-count">0</span>)
+                    </button>
+                    <button class="tab-btn flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-status="route">
+                        En Camino (<span class="route-mobile-count">0</span>)
+                    </button>
+                    <button class="tab-btn flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-status="delivered">
+                        Entregado (<span class="delivered-mobile-count">0</span>)
+                    </button>
+                    <button class="tab-btn flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-status="cancelled">
+                        Cancelado (<span class="cancelled-mobile-count">0</span>)
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Content -->
+            <div id="mobile-tab-content" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Detalles del Pedido</h2>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modal-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Print Area (Hidden) -->
+    <div class="print-area hidden">
+        <div id="print-content"></div>
+    </div>
+
+    <script>
+        // Mock Data and State Management
+        let orders = [];
+        let filteredOrders = [];
+        let currentMobileTab = 'pending';
+        
+        // Initialize mock data
+        function initializeMockData() {
+            const mockOrders = [
+                {
+                    id: 'ORD-001',
+                    timestamp: new Date('2025-01-11T10:30:00'),
+                    customer: 'María González',
+                    phone: '+54 11 1234-5678',
+                    address: 'Av. Corrientes 1234, CABA',
+                    status: 'pending',
+                    paymentMethod: 'card',
+                    paymentStatus: 'pending',
+                    items: [
+                        { name: 'Hamburguesa Clásica', quantity: 2, price: 2500 },
+                        { name: 'Papas Fritas', quantity: 1, price: 800 }
+                    ],
+                    subtotal: 5800,
+                    delivery: 500,
+                    total: 6300,
+                    notes: 'Sin cebolla en una hamburguesa'
+                },
+                {
+                    id: 'ORD-002',
+                    timestamp: new Date('2025-01-11T11:15:00'),
+                    customer: 'Carlos Rodríguez',
+                    phone: '+54 11 9876-5432',
+                    address: 'Av. Santa Fe 5678, CABA',
+                    status: 'preparation',
+                    paymentMethod: 'cash',
+                    paymentStatus: 'pending',
+                    items: [
+                        { name: 'Hamburguesa Doble', quantity: 1, price: 3200 },
+                        { name: 'Gaseosa', quantity: 2, price: 600 }
+                    ],
+                    subtotal: 4400,
+                    delivery: 500,
+                    total: 4900,
+                    notes: ''
+                },
+                {
+                    id: 'ORD-003',
+                    timestamp: new Date('2025-01-11T12:00:00'),
+                    customer: 'Ana Martínez',
+                    phone: '+54 11 5555-1234',
+                    address: 'Av. Rivadavia 9876, CABA',
+                    status: 'ready',
+                    paymentMethod: 'transfer',
+                    paymentStatus: 'paid',
+                    items: [
+                        { name: 'Hamburguesa Veggie', quantity: 1, price: 2800 },
+                        { name: 'Ensalada', quantity: 1, price: 1200 }
+                    ],
+                    subtotal: 4000,
+                    delivery: 0,
+                    total: 4000,
+                    notes: 'Retiro en local'
+                }
+            ];
+            
+            // Load from localStorage or use mock data
+            const savedOrders = localStorage.getItem('burger_orders');
+            orders = savedOrders ? JSON.parse(savedOrders) : mockOrders;
+            
+            // Save to localStorage if using mock data
+            if (!savedOrders) {
+                localStorage.setItem('burger_orders', JSON.stringify(orders));
+            }
+        }
+        
+        // Save orders to localStorage
+        function saveOrders() {
+            localStorage.setItem('burger_orders', JSON.stringify(orders));
+        }
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS'
+            }).format(amount);
+        }
+        
+        // Format date
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+        
+        // Get status display info
+        function getStatusInfo(status) {
+            const statusMap = {
+                pending: { label: 'Pendiente', class: 'status-warning', icon: 'clock' },
+                preparation: { label: 'En Preparación', class: 'status-info', icon: 'cog' },
+                ready: { label: 'Listo', class: 'status-success', icon: 'check' },
+                route: { label: 'En Camino', class: 'status-secondary', icon: 'truck' },
+                delivered: { label: 'Entregado', class: 'status-success', icon: 'check-circle' },
+                cancelled: { label: 'Cancelado', class: 'status-error', icon: 'x-circle' }
+            };
+            return statusMap[status] || statusMap.pending;
+        }
+        
+        // Get payment method display info
+        function getPaymentMethodInfo(method) {
+            const methodMap = {
+                cash: { label: 'Efectivo', class: 'bg-green-100 text-green-800' },
+                card: { label: 'Tarjeta', class: 'bg-blue-100 text-blue-800' },
+                transfer: { label: 'Transferencia', class: 'bg-purple-100 text-purple-800' }
+            };
+            return methodMap[method] || methodMap.cash;
+        }
+        
+        // Create order card HTML
+        function createOrderCard(order) {
+            const statusInfo = getStatusInfo(order.status);
+            const paymentInfo = getPaymentMethodInfo(order.paymentMethod);
+            const itemsSummary = order.items.map(item => `${item.quantity}x ${item.name}`).join(', ');
+            
+            return `
+                <div class="order-card bg-white rounded-lg shadow-sm border border-gray-200 p-4 status-${order.status}" data-order-id="${order.id}">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${order.id}</h3>
+                            <p class="text-sm text-gray-500">${formatDate(order.timestamp)}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="status-badge ${statusInfo.class}">${statusInfo.label}</span>
+                            <div class="relative">
+                                <button class="order-actions-btn p-1 hover:bg-gray-100 rounded" data-order-id="${order.id}">
+                                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="font-medium text-gray-900">${order.customer}</p>
+                        <p class="text-sm text-gray-600">${order.phone}</p>
+                        <p class="text-sm text-gray-600">${order.address}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${paymentInfo.class}">
+                            ${paymentInfo.label}
+                        </span>
+                        ${order.paymentStatus === 'paid' ? '<span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Pagado</span>' : ''}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-600 line-clamp-2">${itemsSummary}</p>
+                        <p class="font-semibold text-gray-900 mt-1">${formatCurrency(order.total)}</p>
+                    </div>
+                    
+                    ${order.notes ? `<div class="mb-3"><p class="text-sm text-gray-600 italic">"${order.notes}"</p></div>` : ''}
+                    
+                    <div class="flex space-x-2">
+                        <button class="view-order-btn flex-1 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors" data-order-id="${order.id}">
+                            Ver Detalles
+                        </button>
+                        <button class="print-order-btn px-3 py-2 text-sm bg-accent text-white rounded hover:bg-accent-700 transition-colors" data-order-id="${order.id}">
+                            Imprimir
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Filter orders
+        function filterOrders() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const paymentFilter = document.getElementById('payment-filter').value;
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            
+            filteredOrders = orders.filter(order => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    order.id.toLowerCase().includes(searchTerm) ||
+                    order.customer.toLowerCase().includes(searchTerm);
+                
+                // Status filter
+                const matchesStatus = !statusFilter || order.status === statusFilter;
+                
+                // Payment filter
+                const matchesPayment = !paymentFilter || order.paymentMethod === paymentFilter;
+                
+                // Date filter
+                const orderDate = order.timestamp.toISOString().split('T')[0];
+                const matchesDateFrom = !dateFrom || orderDate >= dateFrom;
+                const matchesDateTo = !dateTo || orderDate <= dateTo;
+                
+                return matchesSearch && matchesStatus && matchesPayment && matchesDateFrom && matchesDateTo;
+            });
+            
+            renderOrders();
+        }
+        
+        // Render orders
+        function renderOrders() {
+            // Desktop kanban view
+            const statuses = ['pending', 'preparation', 'ready', 'route', 'delivered', 'cancelled'];
+            
+            statuses.forEach(status => {
+                const container = document.getElementById(`${status}-orders`);
+                const statusOrders = filteredOrders.filter(order => order.status === status);
+                
+                if (container) {
+                    container.innerHTML = statusOrders.map(order => createOrderCard(order)).join('');
+                    
+                    // Update count
+                    const countElement = document.getElementById(`${status}-count`);
+                    if (countElement) {
+                        countElement.textContent = statusOrders.length;
+                    }
+                    
+                    // Update mobile count
+                    const mobileCountElement = document.querySelector(`.${status}-mobile-count`);
+                    if (mobileCountElement) {
+                        mobileCountElement.textContent = statusOrders.length;
+                    }
+                }
+            });
+            
+            // Mobile tab view
+            renderMobileTab();
+        }
+        
+        // Render mobile tab
+        function renderMobileTab() {
+            const container = document.getElementById('mobile-tab-content');
+            const statusOrders = filteredOrders.filter(order => order.status === currentMobileTab);
+            
+            if (container) {
+                container.innerHTML = statusOrders.map(order => createOrderCard(order)).join('');
+            }
+        }
+        
+        // Show order details modal
+        function showOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const statusInfo = getStatusInfo(order.status);
+            const paymentInfo = getPaymentMethodInfo(order.paymentMethod);
+            
+            const modalContent = `
+                <div class="space-y-6">
+                    <!-- Order Header -->
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">${order.id}</h3>
+                            <p class="text-sm text-gray-500">${formatDate(order.timestamp)}</p>
+                        </div>
+                        <span class="status-badge ${statusInfo.class}">${statusInfo.label}</span>
+                    </div>
+                    
+                    <!-- Customer Info -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-2">Información del Cliente</h4>
+                        <div class="space-y-1">
+                            <p><span class="font-medium">Nombre:</span> ${order.customer}</p>
+                            <p><span class="font-medium">Teléfono:</span> ${order.phone}</p>
+                            <p><span class="font-medium">Dirección:</span> ${order.address}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Info -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-2">Información de Pago</h4>
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${paymentInfo.class}">
+                                ${paymentInfo.label}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                ${order.paymentStatus === 'paid' ? 'Pagado' : 'Pendiente'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Items -->
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-3">Productos</h4>
+                        <div class="space-y-2">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between items-center py-2 border-b border-gray-200">
+                                    <div>
+                                        <span class="font-medium">${item.quantity}x</span>
+                                        <span class="ml-2">${item.name}</span>
+                                    </div>
+                                    <span class="font-medium">${formatCurrency(item.price * item.quantity)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Totals -->
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span>Subtotal:</span>
+                                <span>${formatCurrency(order.subtotal)}</span>
+                            </div>
+                            ${order.delivery > 0 ? `
+                                <div class="flex justify-between items-center mb-2">
+                                    <span>Envío:</span>
+                                    <span>${formatCurrency(order.delivery)}</span>
+                                </div>
+                            ` : ''}
+                            <div class="flex justify-between items-center font-semibold text-lg border-t border-gray-200 pt-2">
+                                <span>Total:</span>
+                                <span>${formatCurrency(order.total)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${order.notes ? `
+                        <div class="bg-yellow-50 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Notas</h4>
+                            <p class="text-gray-700">${order.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Actions -->
+                    <div class="flex space-x-3">
+                        <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" id="modal-status-select">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pendiente</option>
+                            <option value="preparation" ${order.status === 'preparation' ? 'selected' : ''}>En Preparación</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Listo</option>
+                            <option value="route" ${order.status === 'route' ? 'selected' : ''}>En Camino</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Entregado</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelado</option>
+                        </select>
+                        <button class="btn-primary" onclick="updateOrderStatus('${order.id}', document.getElementById('modal-status-select').value)">
+                            Actualizar Estado
+                        </button>
+                        ${order.paymentStatus !== 'paid' ? `
+                            <button class="btn-secondary" onclick="markAsPaid('${order.id}')">
+                                Marcar Pagado
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modal-content').innerHTML = modalContent;
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+        
+        // Update order status
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                saveOrders();
+                filterOrders();
+                showToast(`Pedido ${orderId} actualizado a ${getStatusInfo(newStatus).label}`, 'success');
+                document.getElementById('order-modal').classList.add('hidden');
+            }
+        }
+        
+        // Mark order as paid
+        function markAsPaid(orderId) {
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].paymentStatus = 'paid';
+                saveOrders();
+                filterOrders();
+                showToast(`Pedido ${orderId} marcado como pagado`, 'success');
+                document.getElementById('order-modal').classList.add('hidden');
+            }
+        }
+        
+        // Print order
+        function printOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const printContent = `
+                <div style="font-family: Arial, sans-serif; max-width: 300px; margin: 0 auto;">
+                    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+                        <h2 style="margin: 0; font-size: 18px;">BURGER ADMIN</h2>
+                        <p style="margin: 5px 0; font-size: 12px;">Recibo de Pedido</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <p style="margin: 0; font-weight: bold;">Pedido: ${order.id}</p>
+                        <p style="margin: 0; font-size: 12px;">${formatDate(order.timestamp)}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <p style="margin: 0; font-weight: bold;">Cliente:</p>
+                        <p style="margin: 0; font-size: 12px;">${order.customer}</p>
+                        <p style="margin: 0; font-size: 12px;">${order.phone}</p>
+                        <p style="margin: 0; font-size: 12px;">${order.address}</p>
+                    </div>
+                    
+                    <div style="border-top: 1px solid #ccc; padding-top: 10px; margin-bottom: 15px;">
+                        ${order.items.map(item => `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-size: 12px;">${item.quantity}x ${item.name}</span>
+                                <span style="font-size: 12px;">${formatCurrency(item.price * item.quantity)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="border-top: 1px solid #ccc; padding-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="font-size: 12px;">Subtotal:</span>
+                            <span style="font-size: 12px;">${formatCurrency(order.subtotal)}</span>
+                        </div>
+                        ${order.delivery > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-size: 12px;">Envío:</span>
+                                <span style="font-size: 12px;">${formatCurrency(order.delivery)}</span>
+                            </div>
+                        ` : ''}
+                        <div style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid #000; padding-top: 5px;">
+                            <span>TOTAL:</span>
+                            <span>${formatCurrency(order.total)}</span>
+                        </div>
+                    </div>
+                    
+                    ${order.notes ? `
+                        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ccc;">
+                            <p style="margin: 0; font-size: 12px; font-weight: bold;">Notas:</p>
+                            <p style="margin: 0; font-size: 12px;">${order.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #ccc;">
+                        <p style="margin: 0; font-size: 10px;">¡Gracias por su pedido!</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('print-content').innerHTML = printContent;
+            window.print();
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'border-green-200 bg-green-50' : type === 'error' ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}`;
+            
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        ${type === 'success' ? 
+                            '<svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>' :
+                            type === 'error' ?
+                            '<svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>' :
+                            '<svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+                        }
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button class="inline-flex text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.remove()">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+        
+        // Simulate new order
+        function simulateNewOrder() {
+            const newOrder = {
+                id: `ORD-${String(orders.length + 1).padStart(3, '0')}`,
+                timestamp: new Date(),
+                customer: 'Cliente Nuevo',
+                phone: '+54 11 0000-0000',
+                address: 'Dirección de entrega',
+                status: 'pending',
+                paymentMethod: 'card',
+                paymentStatus: 'pending',
+                items: [
+                    { name: 'Hamburguesa Clásica', quantity: 1, price: 2500 }
+                ],
+                subtotal: 2500,
+                delivery: 500,
+                total: 3000,
+                notes: ''
+            };
+            
+            orders.unshift(newOrder);
+            saveOrders();
+            filterOrders();
+            
+            // Play notification sound (if available)
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+                audio.play().catch(() => {});
+            } catch (e) {}
+            
+            showToast(`¡Nuevo pedido recibido! ${newOrder.id}`, 'success');
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeMockData();
+            filteredOrders = [...orders];
+            
+            // Set default dates
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            document.getElementById('date-from').value = yesterday.toISOString().split('T')[0];
+            document.getElementById('date-to').value = today.toISOString().split('T')[0];
+            
+            // Initial render
+            renderOrders();
+            
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Filter event listeners
+            document.getElementById('search-input').addEventListener('input', filterOrders);
+            document.getElementById('status-filter').addEventListener('change', filterOrders);
+            document.getElementById('payment-filter').addEventListener('change', filterOrders);
+            document.getElementById('date-from').addEventListener('change', filterOrders);
+            document.getElementById('date-to').addEventListener('change', filterOrders);
+            
+            // Refresh button
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                filterOrders();
+                showToast('Pedidos actualizados', 'success');
+            });
+            
+            // Mobile tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active tab
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.remove('active', 'border-primary', 'text-primary');
+                        b.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    
+                    this.classList.add('active', 'border-primary', 'text-primary');
+                    this.classList.remove('border-transparent', 'text-gray-500');
+                    
+                    currentMobileTab = this.dataset.status;
+                    renderMobileTab();
+                });
+            });
+            
+            // Order card event delegation
+            document.addEventListener('click', function(e) {
+                // View order details
+                if (e.target.closest('.view-order-btn')) {
+                    const orderId = e.target.closest('.view-order-btn').dataset.orderId;
+                    showOrderDetails(orderId);
+                }
+                
+                // Print order
+                if (e.target.closest('.print-order-btn')) {
+                    const orderId = e.target.closest('.print-order-btn').dataset.orderId;
+                    printOrder(orderId);
+                }
+            });
+            
+            // Modal close
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('order-modal').classList.add('hidden');
+            });
+            
+            // Close modal on backdrop click
+            document.getElementById('order-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+            
+            // Responsive layout detection
+            function updateLayout() {
+                const isDesktop = window.innerWidth >= 1024;
+                const desktopKanban = document.getElementById('desktop-kanban');
+                const mobileTabs = document.getElementById('mobile-tabs');
+                
+                if (isDesktop) {
+                    desktopKanban.classList.remove('hidden');
+                    mobileTabs.classList.add('hidden');
+                } else {
+                    desktopKanban.classList.add('hidden');
+                    mobileTabs.classList.remove('hidden');
+                }
+            }
+            
+            window.addEventListener('resize', updateLayout);
+            updateLayout();
+            
+            // Simulate new orders periodically (for demo)
+            setInterval(() => {
+                if (Math.random() < 0.1) { // 10% chance every 30 seconds
+                    simulateNewOrder();
+                }
+            }, 30000);
+        });
+        
+        // Global functions for modal actions
+        window.updateOrderStatus = updateOrderStatus;
+        window.markAsPaid = markAsPaid;
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

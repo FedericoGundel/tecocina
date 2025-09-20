@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Confirmación de Pedido - Burger House</title>
+        <link rel="stylesheet" href="../css/main.css" />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet" />
+        <script type="module"
+            src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fburgerhou6626back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+    </head>
+    <body class="bg-background min-h-screen">
+        <!-- Header Navigation -->
+        <header
+            class="bg-surface shadow-sm border-b border-border-light sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <a href="product_catalog.html"
+                            class="flex items-center space-x-2">
+                            <div
+                                class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                                <img
+                                    src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNGRkY0QzMiLz4KPHN2ZyB4PSI1IiB5PSI1IiB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIyMCIgeD0iMCIgeT0iNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIxNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIyNSIgcng9IjMiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjEwIiB4PSIwIiB5PSIwIiByeD0iMyIgZmlsbD0iI0ZGRDcwMCIvPgo8L3N2Zz4KPC9zdmc+"
+                                    alt="Hamburguesa" class="w-6 h-6">
+                            </div>
+                            <span
+                                class="text-xl font-bold text-text-primary">Burger
+                                House</span>
+                        </a>
+                    </div>
+
+                    <!-- Navigation Links (Desktop) -->
+                    <nav class="hidden md:flex items-center space-x-6">
+                        <a href="product_catalog.html"
+                            class="text-text-primary hover:text-primary transition-colors">Catálogo</a>
+                        <a href="shopping_cart.html"
+                            class="text-text-primary hover:text-primary transition-colors">Carrito</a>
+                        <a href="order_tracking.html"
+                            class="text-text-primary hover:text-primary transition-colors">Seguir
+                            Pedido</a>
+                    </nav>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobileMenuToggle"
+                        class="md:hidden p-2 text-text-primary hover:text-primary transition-colors touch-target">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation Menu -->
+        <nav id="mobileNav"
+            class="md:hidden bg-surface border-b border-border-light hidden">
+            <div class="px-4 py-2 space-y-1">
+                <a href="product_catalog.html"
+                    class="block px-3 py-2 text-text-primary hover:text-primary transition-colors">Catálogo</a>
+                <a href="shopping_cart.html"
+                    class="block px-3 py-2 text-text-primary hover:text-primary transition-colors">Carrito</a>
+                <a href="order_tracking.html"
+                    class="block px-3 py-2 text-text-primary hover:text-primary transition-colors">Seguir
+                    Pedido</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+            <!-- Success Header -->
+            <div class="text-center mb-8">
+                <div
+                    class="w-20 h-20 bg-success rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-white text-3xl"></i>
+                </div>
+                <h1
+                    class="text-2xl md:text-3xl font-bold text-text-primary mb-2">¡Pedido
+                    Confirmado!</h1>
+                <p class="text-text-secondary">Tu pedido ha sido recibido y está
+                    siendo preparado</p>
+            </div>
+
+            <!-- Order Information Card -->
+            <div class="card mb-6">
+                <div class="p-6">
+                    <div
+                        class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <div>
+                            <h2
+                                class="text-xl font-semibold text-text-primary mb-1">Número
+                                de Pedido</h2>
+                            <p id="orderNumber"
+                                class="text-2xl font-bold text-primary font-mono">BH-20250911024908</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-right">
+                            <p class="text-text-secondary text-sm">Fecha del
+                                pedido</p>
+                            <p id="orderDate"
+                                class="font-medium text-text-primary">11/09/2025
+                                - 02:49</p>
+                        </div>
+                    </div>
+
+                    <!-- Estimated Delivery Time -->
+                    <div
+                        class="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div>
+                                <h3
+                                    class="font-semibold text-text-primary">Tiempo
+                                    estimado de entrega</h3>
+                                <p id="estimatedDelivery"
+                                    class="text-text-secondary">35-45
+                                    minutos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="trackOrderBtn"
+                            class="btn-primary flex-1 flex items-center justify-center space-x-2">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Seguir Pedido</span>
+                        </button>
+                        <a href="product_catalog.html"
+                            class="btn-secondary flex-1 flex items-center justify-center space-x-2 text-center">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Seguir Comprando</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Details Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Order Summary -->
+                <div class="card">
+                    <div class="p-6">
+                        <h3
+                            class="text-lg font-semibold text-text-primary mb-4 flex items-center">
+                            <i class="fas fa-receipt text-primary mr-2"></i>
+                            Resumen del Pedido
+                        </h3>
+
+                        <!-- Order Items -->
+                        <div id="orderItems" class="space-y-4 mb-6">
+                            <!-- Items will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Order Totals -->
+                        <div
+                            class="border-t border-border-light pt-4 space-y-2">
+                            <div
+                                class="flex justify-between text-text-secondary">
+                                <span>Subtotal</span>
+                                <span id="subtotalAmount">$6.700</span>
+                            </div>
+                            <div
+                                class="flex justify-between text-text-secondary"
+                                id="deliveryFeeRow">
+                                <span>Costo de envío</span>
+                                <span id="deliveryFee">$1.500</span>
+                            </div>
+                            <div
+                                class="flex justify-between text-text-secondary"
+                                id="serviceFeeRow">
+                                <span>Cargo por servicio (3%)</span>
+                                <span id="serviceFee">$246</span>
+                            </div>
+                            <div class="flex justify-between text-success"
+                                id="discountRow" style="display: none;">
+                                <span>Descuento (BURGER10)</span>
+                                <span id="discountAmount">-$670</span>
+                            </div>
+                            <div
+                                class="border-t border-border-light pt-2 flex justify-between text-lg font-bold text-text-primary">
+                                <span>Total</span>
+                                <span id="totalAmount">$7.776</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="space-y-6">
+                    <!-- Delivery Information -->
+                    <div class="card">
+                        <div class="p-6">
+                            <h3
+                                class="text-lg font-semibold text-text-primary mb-4 flex items-center">
+                                <i id="deliveryIcon"
+                                    class="fas fa-truck text-primary mr-2"></i>
+                                <span id="deliveryTitle">Información de
+                                    Entrega</span>
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div id="customerName"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-user text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">Juan
+                                            Carlos Pérez</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Cliente</p>
+                                    </div>
+                                </div>
+
+                                <div id="customerPhone"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-phone text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">+54
+                                            11 4567-8901</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Teléfono
+                                            de contacto</p>
+                                    </div>
+                                </div>
+
+                                <div id="deliveryAddress"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-map-marker-alt text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">Av.
+                                            Corrientes 1234, Piso 5, Depto B</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Buenos
+                                            Aires, CABA - C1043AAZ</p>
+                                    </div>
+                                </div>
+
+                                <div id="deliveryTime"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-clock text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">Lo
+                                            antes posible</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Horario
+                                            de entrega</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div class="card">
+                        <div class="p-6">
+                            <h3
+                                class="text-lg font-semibold text-text-primary mb-4 flex items-center">
+                                <i
+                                    class="fas fa-credit-card text-primary mr-2"></i>
+                                Información de Pago
+                            </h3>
+
+                            <div class="space-y-3">
+                                <div id="paymentMethod"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-credit-card text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">Tarjeta
+                                            de Crédito</p>
+                                        <p
+                                            class="text-text-secondary text-sm">****
+                                            **** **** 1234</p>
+                                    </div>
+                                </div>
+
+                                <div id="transactionRef"
+                                    class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-receipt text-text-secondary mt-1"></i>
+                                    <div>
+                                        <p
+                                            class="font-medium text-text-primary">TXN-20250911024908</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Referencia
+                                            de transacción</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <i
+                                        class="fas fa-check-circle text-success mt-1"></i>
+                                    <div>
+                                        <p class="font-medium text-success">Pago
+                                            Confirmado</p>
+                                        <p
+                                            class="text-text-secondary text-sm">Procesado
+                                            exitosamente</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="card mt-6">
+                <div class="p-6">
+                    <h3
+                        class="text-lg font-semibold text-text-primary mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-primary mr-2"></i>
+                        Información Importante
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4
+                                class="font-medium text-text-primary mb-2">Seguimiento
+                                del Pedido</h4>
+                            <p class="text-text-secondary text-sm mb-3">Podrás
+                                seguir el estado de tu pedido en tiempo real
+                                usando el número de pedido proporcionado.</p>
+                            <button
+                                class="text-primary hover:text-primary-600 text-sm font-medium transition-colors"
+                                onclick="openTrackingModal()">
+                                <i class="fas fa-external-link-alt mr-1"></i>
+                                Abrir seguimiento
+                            </button>
+                        </div>
+
+                        <div>
+                            <h4
+                                class="font-medium text-text-primary mb-2">Contacto</h4>
+                            <p class="text-text-secondary text-sm mb-3">Si
+                                tienes alguna consulta sobre tu pedido, no dudes
+                                en contactarnos.</p>
+                            <div class="space-y-1">
+                                <p class="text-sm text-text-secondary">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    +54 11 1234-5678
+                                </p>
+                                <p class="text-sm text-text-secondary">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    pedidos@burgerhouse.com.ar
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Order Tracking Modal -->
+        <div id="trackingModal" class="fixed inset-0 z-50 hidden">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black bg-opacity-50"
+                id="trackingBackdrop"></div>
+
+            <!-- Modal Panel -->
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+                <div
+                    class="bg-surface rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+                    id="trackingPanel">
+                    <!-- Modal Header -->
+                    <div
+                        class="flex items-center justify-between p-6 border-b border-border-light">
+                        <h2
+                            class="text-lg font-semibold text-text-primary">Seguimiento
+                            del Pedido</h2>
+                        <button id="closeTrackingModal"
+                            class="p-2 text-text-secondary hover:text-text-primary transition-colors touch-target">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Content -->
+                    <div class="p-6">
+                        <div class="text-center mb-6">
+                            <p class="text-text-secondary text-sm">Número de
+                                pedido</p>
+                            <p class="font-mono font-bold text-primary text-lg"
+                                id="modalOrderNumber">BH-20250911024908</p>
+                        </div>
+
+                        <!-- Order Status Timeline -->
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-8 h-8 bg-success rounded-full flex items-center justify-center">
+                                    <i
+                                        class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p
+                                        class="font-medium text-text-primary">Pedido
+                                        Confirmado</p>
+                                    <p class="text-text-secondary text-sm">02:49
+                                        - Tu pedido ha sido recibido</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-8 h-8 bg-warning rounded-full flex items-center justify-center">
+                                    <i
+                                        class="fas fa-utensils text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-text-primary">En
+                                        Preparación</p>
+                                    <p
+                                        class="text-text-secondary text-sm">Nuestros
+                                        chefs están preparando tu pedido</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-8 h-8 bg-border-light rounded-full flex items-center justify-center">
+                                    <i
+                                        class="fas fa-motorcycle text-text-secondary text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p
+                                        class="font-medium text-text-secondary">En
+                                        Camino</p>
+                                    <p class="text-text-secondary text-sm">Tu
+                                        pedido está siendo entregado</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-8 h-8 bg-border-light rounded-full flex items-center justify-center">
+                                    <i
+                                        class="fas fa-home text-text-secondary text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p
+                                        class="font-medium text-text-secondary">Entregado</p>
+                                    <p class="text-text-secondary text-sm">Tu
+                                        pedido ha sido entregado</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estimated Time -->
+                        <div class="mt-6 p-4 bg-primary-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p
+                                        class="font-medium text-text-primary">Tiempo
+                                        estimado</p>
+                                    <p
+                                        class="text-text-secondary text-sm">Entrega
+                                        aproximada</p>
+                                </div>
+                                <p class="text-primary font-bold">25-35 min</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="p-6 border-t border-border-light">
+                        <a href="order_tracking.html"
+                            class="btn-primary w-full text-center">
+                            Ver Seguimiento Completo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer"
+            class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+        <!-- Order Item Template -->
+        <template id="orderItemTemplate">
+            <div
+                class="flex items-center space-x-3 py-3 border-b border-border-light last:border-b-0">
+                <img class="w-12 h-12 rounded-lg object-cover" src alt />
+                <div class="flex-1 min-w-0">
+                    <h4
+                        class="font-medium text-text-primary text-sm truncate item-name"></h4>
+                    <p class="text-text-secondary text-xs item-options"></p>
+                    <div class="flex items-center justify-between mt-1">
+                        <span
+                            class="text-text-secondary text-sm item-quantity">Cantidad:
+                            1</span>
+                        <span
+                            class="item-total font-medium text-primary text-sm"></span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <script>
+        // Order data (would typically come from localStorage or API)
+        let orderData = {
+            orderNumber: 'BH-20250911024908',
+            orderDate: '11/09/2025 - 02:49',
+            estimatedDelivery: '35-45 minutos',
+            customer: {
+                name: 'Juan Carlos Pérez',
+                phone: '+54 11 4567-8901',
+                email: 'juan.perez@email.com'
+            },
+            delivery: {
+                type: 'delivery', // 'delivery' or 'pickup'
+                address: 'Av. Corrientes 1234, Piso 5, Depto B',
+                city: 'Buenos Aires, CABA',
+                postalCode: 'C1043AAZ',
+                time: 'Lo antes posible'
+            },
+            payment: {
+                method: 'Tarjeta de Crédito',
+                cardLast4: '1234',
+                transactionRef: 'TXN-20250911024908',
+                status: 'confirmed'
+            },
+            items: [
+                {
+                    id: 1,
+                    name: 'Burger Clásica',
+                    price: 2500,
+                    quantity: 2,
+                    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3',
+                    options: { 'Tamaño': { label: 'Simple', price: 0 } }
+                },
+                {
+                    id: 4,
+                    name: 'Papas Fritas',
+                    price: 1500,
+                    quantity: 1,
+                    image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3',
+                    options: { 'Tamaño': { label: 'Medianas', price: 300 } }
+                }
+            ],
+            totals: {
+                subtotal: 6700,
+                deliveryFee: 1500,
+                serviceFee: 246,
+                discount: 0,
+                discountCode: '',
+                total: 7776
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrderData();
+            setupEventListeners();
+        });
+
+        // Load order data from localStorage or use default
+        function loadOrderData() {
+            const savedOrder = localStorage.getItem('burgerHouseOrder');
+            if (savedOrder) {
+                orderData = JSON.parse(savedOrder);
+            }
+            
+            renderOrderConfirmation();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+                const mobileNav = document.getElementById('mobileNav');
+                mobileNav.classList.toggle('hidden');
+            });
+
+            // Track order button
+            document.getElementById('trackOrderBtn').addEventListener('click', openTrackingModal);
+
+            // Modal controls
+            document.getElementById('closeTrackingModal').addEventListener('click', closeTrackingModal);
+            document.getElementById('trackingBackdrop').addEventListener('click', closeTrackingModal);
+        }
+
+        // Render order confirmation
+        function renderOrderConfirmation() {
+            // Update order number and date
+            document.getElementById('orderNumber').textContent = orderData.orderNumber;
+            document.getElementById('orderDate').textContent = orderData.orderDate;
+            document.getElementById('estimatedDelivery').textContent = orderData.estimatedDelivery;
+            document.getElementById('modalOrderNumber').textContent = orderData.orderNumber;
+
+            // Update customer information
+            document.querySelector('#customerName p').textContent = orderData.customer.name;
+            document.querySelector('#customerPhone p').textContent = orderData.customer.phone;
+
+            // Update delivery/pickup information
+            if (orderData.delivery.type === 'pickup') {
+                document.getElementById('deliveryIcon').className = 'fas fa-store text-primary mr-2';
+                document.getElementById('deliveryTitle').textContent = 'Información de Retiro';
+                document.querySelector('#deliveryAddress p').textContent = 'Burger House - Local Centro';
+                document.querySelector('#deliveryAddress p:last-child').textContent = 'Av. Corrientes 500, CABA';
+            } else {
+                document.querySelector('#deliveryAddress p').textContent = orderData.delivery.address;
+                document.querySelector('#deliveryAddress p:last-child').textContent = `${orderData.delivery.city} - ${orderData.delivery.postalCode}`;
+            }
+
+            document.querySelector('#deliveryTime p').textContent = orderData.delivery.time;
+
+            // Update payment information
+            document.querySelector('#paymentMethod p').textContent = orderData.payment.method;
+            document.querySelector('#paymentMethod p:last-child').textContent = `**** **** **** ${orderData.payment.cardLast4}`;
+            document.querySelector('#transactionRef p').textContent = orderData.payment.transactionRef;
+
+            // Render order items
+            renderOrderItems();
+
+            // Update totals
+            updateOrderTotals();
+        }
+
+        // Render order items
+        function renderOrderItems() {
+            const orderItemsContainer = document.getElementById('orderItems');
+            orderItemsContainer.innerHTML = '';
+
+            orderData.items.forEach(item => {
+                const orderItem = createOrderItem(item);
+                orderItemsContainer.appendChild(orderItem);
+            });
+        }
+
+        // Create order item element
+        function createOrderItem(item) {
+            const template = document.getElementById('orderItemTemplate');
+            const orderItem = template.content.cloneNode(true);
+
+            // Set item info
+            orderItem.querySelector('img').src = item.image;
+            orderItem.querySelector('img').alt = item.name;
+            orderItem.querySelector('.item-name').textContent = item.name;
+            orderItem.querySelector('.item-quantity').textContent = `Cantidad: ${item.quantity}`;
+            orderItem.querySelector('.item-total').textContent = formatPrice(item.price * item.quantity);
+
+            // Set options text
+            const optionsText = Object.entries(item.options || {})
+                .map(([key, value]) => `${key}: ${value.label}`)
+                .join(', ');
+            orderItem.querySelector('.item-options').textContent = optionsText;
+
+            return orderItem;
+        }
+
+        // Update order totals
+        function updateOrderTotals() {
+            document.getElementById('subtotalAmount').textContent = formatPrice(orderData.totals.subtotal);
+            document.getElementById('deliveryFee').textContent = formatPrice(orderData.totals.deliveryFee);
+            document.getElementById('serviceFee').textContent = formatPrice(orderData.totals.serviceFee);
+            document.getElementById('totalAmount').textContent = formatPrice(orderData.totals.total);
+
+            // Show/hide delivery fee for pickup
+            if (orderData.delivery.type === 'pickup') {
+                document.getElementById('deliveryFeeRow').style.display = 'none';
+            }
+
+            // Show discount if applied
+            if (orderData.totals.discount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discountAmount').textContent = `-${formatPrice(orderData.totals.discount)}`;
+            }
+        }
+
+        // Modal functions
+        function openTrackingModal() {
+            const modal = document.getElementById('trackingModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeTrackingModal() {
+            const modal = document.getElementById('trackingModal');
+            modal.classList.add('hidden');
+        }
+
+        // Global function for tracking button in info section
+        window.openTrackingModal = openTrackingModal;
+
+        // Format price utility
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `bg-${type === 'success' ? 'success' : 'error'} text-white px-4 py-3 rounded-lg shadow-lg animate-toast-slide`;
+            toast.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Generate order number with timestamp
+        function generateOrderNumber() {
+            const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+            return `BH-${timestamp}`;
+        }
+
+        // Clear order data after confirmation (optional)
+        function clearOrderData() {
+            localStorage.removeItem('burgerHouseCart');
+            localStorage.removeItem('burgerHouseOrder');
+        }
+    </script>
+        <script id="dhws-dataInjector"
+            src="../public/dhws-data-injector.js"></script>
+    </body>
+</html>
